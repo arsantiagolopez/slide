@@ -14,10 +14,12 @@ const sequelize = new Sequelize(DATABASE_URL, {
   // Heroku requires SSL
   ssl: NODE_ENV === "production" ? true : false,
   dialectOptions: {
-    ssl: {
-      require: NODE_ENV === "production" ? true : false,
-      rejectUnauthorized: NODE_ENV === "production" ? true : false,
-    },
+    ...(NODE_ENV === "production" && {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    }),
   },
 });
 
