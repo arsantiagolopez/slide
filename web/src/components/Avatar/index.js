@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { useMutation } from "urql";
 import { Editable } from "../../components/Editable";
@@ -21,8 +21,11 @@ import {
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { showToast } from "../../utils/showToast";
 import { useUser } from "../../utils/useUser";
+import { UpdateAvatar } from "../UpdateAvatar";
 
 const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
+  const [avatarSrc, setAvatarSrc] = useState(null);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { user } = useUser({ redirectTo: "/login" });
@@ -68,12 +71,21 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
 
   const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
 
+  const updateAvatarProps = { setAvatarSrc };
+
+  // Update user avatar if user
+  useEffect(() => {
+    if (user) {
+      setAvatarSrc(user?.me?.picture);
+    }
+  }, [user]);
+
   return (
     <>
       <Image
         onClick={onOpen}
         ref={buttonRef}
-        src={user?.me?.picture}
+        src={avatarSrc}
         display={!isOpen ? "block" : "none"}
         {...styles.avatar}
       />
@@ -96,11 +108,13 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
               Profile
             </Flex>
 
-            <Image
-              src={user?.me?.picture}
-              style={styles.picture}
-              boxSize={isDesktop ? "15vw" : "50vw"}
-            />
+            <UpdateAvatar {...updateAvatarProps}>
+              <Image
+                src={avatarSrc}
+                style={styles.picture}
+                boxSize={isDesktop ? "15vw" : "50vw"}
+              />
+            </UpdateAvatar>
 
             <Flex {...styles.field}>
               <Text {...styles.label}>Your name</Text>
@@ -161,7 +175,6 @@ const styles = {
     cursor: "pointer",
   },
   picture: {
-    cursor: "pointer",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
     borderRadius: "50%",

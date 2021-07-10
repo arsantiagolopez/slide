@@ -7,6 +7,7 @@ import "dotenv-safe/config";
 import express from "express";
 import session from "express-session";
 import { applyMiddleware } from "graphql-middleware";
+import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 import path from "path";
 import Config from "./config";
@@ -22,6 +23,9 @@ const PORT = Config.port;
 
 // Express server
 const app = express();
+
+// Enable uploads on the graphQL server
+app.use(graphqlUploadExpress());
 
 // Cors configuration
 app.use(
@@ -68,6 +72,7 @@ const executableSchema = makeExecutableSchema({
 // Start Apollo server
 const apolloServer = new ApolloServer({
   schema: applyMiddleware(executableSchema),
+  uploads: false, // Disable older graphql-upload
   // New context with WebSockets
   context: ({ req, res, connection }) => ({
     models,
