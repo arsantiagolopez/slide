@@ -1,1 +1,0 @@
-Slide Messaging System
