@@ -7,7 +7,7 @@
     "start": "nodemon --exec babel-node src/index.js",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
-    "heroku-push": "cd ../ && git subtree push --prefix backend heroku-app-backend main || true"
+    "heroku-push": "cd ../ && git subtree push --prefix server heroku main || true"
   },
   "author": "arsantiagolopez",
   "license": "ISC",
