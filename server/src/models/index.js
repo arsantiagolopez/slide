@@ -3,12 +3,18 @@ import Config from "../config";
 import User from "./User";
 
 const DATABASE_URL = Config.databaseUrl;
+const NODE_ENV = Config.nodeEnv;
 
 const sequelize = new Sequelize(DATABASE_URL, {
   dialect: "postgres",
   logging: console.log,
   define: {
     underscored: true,
+  },
+  // Heroku requires SSL
+  ssl: NODE_ENV === "production" ? true : false,
+  dialectOptions: {
+    ssl: NODE_ENV === "production" ? true : false,
   },
 });
 
