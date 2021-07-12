@@ -5,7 +5,7 @@ import { Logo } from "../../components/Logo";
 import { useDimensions } from "../../utils/useDimensions";
 import { IconNavigation } from "./IconNavigation";
 
-const Navigation = ({ isLogin, isPhoto }) => {
+const Navigation = ({ isLogin }) => {
   const [screenDimensions, setScreenDimensions] = useState(null);
   const dimensions = useDimensions();
 
@@ -17,21 +17,19 @@ const Navigation = ({ isLogin, isPhoto }) => {
 
   return (
     <>
+      {!isLogin && <IconNavigation />}
       <Flex
         {...styles.wrapper}
         height={isLogin ? "40vh" : "max(2vh, 1.5em)"}
         paddingTop={isLogin ? "25vh" : "none"}
       >
-        {!isLogin && !isPhoto && (
+        {!isLogin && (
           <Flex {...styles.avatar} left={isDesktop ? "10vw" : "1em"}>
             <Avatar {...avatarProps} />
           </Flex>
         )}
         <Logo />
       </Flex>
-
-      {/* Mobile nav */}
-      {!isDesktop && !isLogin && <IconNavigation />}
     </>
   );
 };
@@ -42,7 +40,7 @@ export { Navigation };
 
 const styles = {
   wrapper: {
-    zIndex: "0",
+    zIndex: 0,
     direction: "row",
     justify: "center",
     align: "center",
@@ -52,7 +50,7 @@ const styles = {
     overflowX: "hidden",
   },
   avatar: {
-    zIndex: "6",
+    zIndex: 5,
     position: "absolute",
     boxSize: "max(2vh, 2em)",
   },

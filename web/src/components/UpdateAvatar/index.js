@@ -5,16 +5,19 @@ import { useMutation } from "urql";
 import { UploadImage as UploadImageMutation } from "../../graphql/mutations/imgbb";
 import { UpdateProfile as UpdateProfileMutation } from "../../graphql/mutations/user";
 
-const UpdateAvatar = ({ children }) => {
+const UpdateAvatar = ({ children, setAvatarSrc }) => {
   const [file, setFile] = useState();
   const [, updateProfileMutation] = useMutation(UpdateProfileMutation);
   const [, uploadImageMutation] = useMutation(UploadImageMutation);
 
+  // Send file to server, upload to imgBB & update your profile
   const onDrop = useCallback(
     async ([file]) => {
-      // Upload file to server
       if (file) {
-        file["url"] = URL.createObjectURL(file);
+        file["preview"] = URL.createObjectURL(file);
+
+        // Temporarily update user's avatar for better UX
+        setAvatarSrc(file.preview);
 
         // Upload image to ImgBB
         const {
@@ -36,6 +39,13 @@ const UpdateAvatar = ({ children }) => {
         } = await updateProfileMutation({ input: { picture } });
 
         console.log(updateProfile);
+
+        // Avatar successfully updated
+        if (updateProfile.user) {
+          console.log(file.preview);
+          // Temporarily change avatar's src
+          setAvatarSrc(`url("${file.preview}")`);
+        }
       }
     },
     [updateProfileMutation]

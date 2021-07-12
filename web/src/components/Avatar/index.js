@@ -154,6 +154,7 @@ const styles = {
     placement: "left",
   },
   body: {
+    zIndex: 1000,
     background: "white",
     direction: "column",
     justify: "flex-start",

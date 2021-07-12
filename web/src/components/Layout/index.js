@@ -10,12 +10,13 @@ const Layout = ({ children }) => {
   const isLogin = pathname === "/login";
 
   const navigationProps = { isLogin };
+  const footerProps = { hideFooter: !isLogin };
 
   return (
     <Flex {...styles.wrapper}>
       <Navigation {...navigationProps} />
       {children}
-      <Footer hideFooter={!isLogin} />
+      <Footer {...footerProps} />
     </Flex>
   );
 };

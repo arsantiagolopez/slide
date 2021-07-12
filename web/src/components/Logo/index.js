@@ -1,10 +1,15 @@
 import { Box } from "@chakra-ui/react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Logo = () => (
   <Box {...styles.wrapper}>
-    <Image src="/word.png" {...styles.image} />
+    <Link href="/">
+      <a>
+        <Image src="/word.png" {...styles.image} />
+      </a>
+    </Link>
   </Box>
 );
 
@@ -16,7 +21,7 @@ const styles = {
   wrapper: {
     position: "relative",
     height: "100%",
-    width: "100%",
+    width: "10%",
     userSelect: "none",
   },
   image: {
