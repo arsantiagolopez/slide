@@ -55,14 +55,7 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
         setError(field, { type: "manual", message })
       );
     } else if (data?.login.user) {
-      // Login successful
-
-      // Redirect user to /photo if picture is null
-      if (!data?.login.user.picture) {
-        router.push("/photo");
-      }
-
-      // Redirect to home
+      // Login successful, redirect home
       router.push("/");
     }
   };

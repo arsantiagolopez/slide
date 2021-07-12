@@ -1,5 +1,6 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
-import { dedupExchange, fetchExchange } from "urql";
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
+import { dedupExchange } from "urql";
 import Config from "../config";
 import { Me as MeQuery } from "../graphql/queries/user";
 
@@ -80,7 +81,7 @@ const createUrqlClient = (ssrExchange) => ({
       },
     }),
     ssrExchange,
-    fetchExchange,
+    multipartFetchExchange,
   ],
 });
 

@@ -10,48 +10,32 @@ const UpdateAvatar = ({ children }) => {
   const [, updateProfileMutation] = useMutation(UpdateProfileMutation);
   const [, uploadImageMutation] = useMutation(UploadImageMutation);
 
-  const fileToDataUri = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    });
-
   const onDrop = useCallback(
     async ([file]) => {
       // Upload file to server
       if (file) {
-        let test;
+        file["url"] = URL.createObjectURL(file);
 
-        console.log(file);
-
-        fileToDataUri(file).then((dataUri) => {
-          test = dataUri;
-        });
-
-        console.log(test);
-
-        // TODO: CONTINUNE HERE
-
-        return;
-
-        console.log(file);
         // Upload image to ImgBB
         const {
           data: { uploadImage },
         } = await uploadImageMutation({ picture: file });
 
-        console.log("UPLOADIMAGE", uploadImage);
-        return;
+        const picture = uploadImage?.picture;
 
-        const picture = uploadImage;
+        // TODO: Show error toast
+        if (!picture) {
+          return console.log(
+            "Something went wrong trying to upload your picture. Try again later"
+          );
+        }
 
         // Update profile with image
         const {
           data: { updateProfile },
-        } = await updateProfileMutation({ picture });
+        } = await updateProfileMutation({ input: { picture } });
+
+        console.log(updateProfile);
       }
     },
     [updateProfileMutation]

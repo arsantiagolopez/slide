@@ -35,10 +35,8 @@ const Signup = ({ setIsLogin, email }) => {
         setError(field, { type: "manual", message })
       );
     } else if (data?.signup.user) {
-      // Signup successful
-
-      // Redirect user to /photo to get user a photo
-      router.push("/photo");
+      // Signup successful, redirect home
+      router.push("/");
     }
   };
 

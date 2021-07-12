@@ -898,6 +898,14 @@
   resolved "https://registry.yarnpkg.com/@types/warning/-/warning-3.0.0.tgz#0d2501268ad8f9962b740d387c4654f5f8e23e52"
   integrity sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI=
 
+"@urql/core@>=2.1.0":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@urql/core/-/core-2.1.5.tgz#8fbc0846d6020cee89dadbee07ffb0a618ab29d8"
+  integrity sha512-iX30xZ6exdJbajv2S4gxVP+1ZEh57x9gEuUrpOCLWZp84970XDSo82xoz+11I+NGWiQNZfbIs6LTLaie/iG3OQ==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.1.0"
+    wonka "^4.0.14"
+
 "@urql/core@>=2.1.4", "@urql/core@^2.1.4":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@urql/core/-/core-2.1.4.tgz#b1fb487e9b830360192b127a26f505994cef474a"
@@ -912,6 +920,15 @@
   integrity sha512-B0U/Zyw6IRaQRC60qy3hhA7ev4NiFI9LYUyx8ZhivSnSplf+qyZuYOCvuQ8aJuNX332vOpC50A9Vzq/h3fp+Kw==
   dependencies:
     "@urql/core" ">=2.1.4"
+    wonka "^4.0.14"
+
+"@urql/exchange-multipart-fetch@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-multipart-fetch/-/exchange-multipart-fetch-0.1.12.tgz#5b20e39eb6f213864f3ec98b2dfb7050cc881478"
+  integrity sha512-iqSNJaB9vWE9zkplqTXnxtradITRPek6IDCCVyYq1KPKhUA8XePDjtBgxERJbSzs3SXX1L1giR6V3Bdy71leOg==
+  dependencies:
+    "@urql/core" ">=2.1.0"
+    extract-files "^8.1.0"
     wonka "^4.0.14"
 
 "@vercel/build-utils@2.11.1":
@@ -1726,6 +1743,11 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   dependencies:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
+
+extract-files@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/extract-files/-/extract-files-8.1.0.tgz#46a0690d0fe77411a2e3804852adeaa65cd59288"
+  integrity sha512-PTGtfthZK79WUMk+avLmwx3NGdU8+iVFXC2NMGxKsn0MnihOG2lvumj+AZo8CTwTrwjXDgZ5tztbRlEdRjBonQ==
 
 file-selector@^0.2.2:
   version "0.2.4"

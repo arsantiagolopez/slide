@@ -1,13 +1,13 @@
 const UploadImage = `
   mutation UploadImage($picture: Upload!) {
-    updateProfile(picture: $picture) {
+    uploadImage(picture: $picture) {
       errors {
         field
         message
       }
       picture
     }
-  }
+  } 
 `;
 
 export { UploadImage };

@@ -1,6 +1,6 @@
 export default `
   scalar Upload
-  
+
   type Error {
     field: String
     message: String

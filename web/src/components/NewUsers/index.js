@@ -196,10 +196,10 @@ const styles = {
     direction: "column",
     height: { base: "5em", md: "100vh" },
     paddingTop: { base: "0", md: "1.25em" },
-    boxShadow: "lg",
     bg: "gray.800",
     transition: "all 0.2s",
-    boxShadow: "-3vw 0 10vw 5vw white",
+    boxShadow: { base: "none", md: "-3vw 0 10vw 5vw white" },
+    minHeight: "calc(100% + 3.5em)",
   },
   bar: {
     display: { base: "none", md: "flex" },

@@ -8,9 +8,8 @@ const Layout = ({ children }) => {
   const { pathname } = useRouter();
 
   const isLogin = pathname === "/login";
-  const isPhoto = pathname === "/photo";
 
-  const navigationProps = { isLogin, isPhoto };
+  const navigationProps = { isLogin };
 
   return (
     <Flex {...styles.wrapper}>
