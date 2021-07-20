@@ -1,37 +1,55 @@
-import { Flex } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Flex, IconButton } from "@chakra-ui/react";
+import Link from "next/link";
+import React from "react";
+import { IoFileTrayFull, IoHome } from "react-icons/io5";
 import { Avatar } from "../../components/Avatar";
 import { Logo } from "../../components/Logo";
-import { useDimensions } from "../../utils/useDimensions";
-import { IconNavigation } from "./IconNavigation";
 
-const Navigation = ({ isLogin }) => {
-  const [screenDimensions, setScreenDimensions] = useState(null);
-  const dimensions = useDimensions();
-
-  const isDesktop = screenDimensions?.width > screenDimensions?.height;
-
-  useEffect(() => setScreenDimensions(dimensions), [dimensions.width]);
-
+const Navigation = ({ isLogin, isDesktop, user, pathname }) => {
   const avatarProps = { isDesktop };
   const logoProps = { isLogin };
 
+  const isMessages = pathname.includes("/messages");
+
   return (
-    <>
-      {!isLogin && <IconNavigation />}
-      <Flex
-        {...styles.wrapper}
-        height={isLogin ? "40vh" : "max(2vh, 1.5em)"}
-        paddingTop={isLogin ? "25vh" : "none"}
-      >
-        {!isLogin && (
+    <Flex
+      {...styles.wrapper}
+      height={isLogin ? "40vh" : "max(2vh, 1.5em)"}
+      paddingTop={isLogin ? "25vh" : "none"}
+    >
+      <Logo {...logoProps} />
+
+      {
+        // User links
+        user?.me && !isLogin && (
           <Flex {...styles.avatar} left={isDesktop ? "10vw" : "1em"}>
             <Avatar {...avatarProps} />
+            <>
+              {
+                // Conditional icon navigation
+                !isMessages ? (
+                  <Link href="/messages">
+                    <IconButton
+                      aria-label="Go to messages"
+                      icon={<IoFileTrayFull />}
+                      {...styles.icon}
+                    />
+                  </Link>
+                ) : (
+                  <Link href="/">
+                    <IconButton
+                      aria-label="Go home"
+                      icon={<IoHome />}
+                      {...styles.icon}
+                    />
+                  </Link>
+                )
+              }
+            </>
           </Flex>
-        )}
-        <Logo {...logoProps} />
-      </Flex>
-    </>
+        )
+      }
+    </Flex>
   );
 };
 
@@ -54,5 +72,24 @@ const styles = {
     zIndex: 5,
     position: "absolute",
     boxSize: "max(2vh, 2em)",
+  },
+  icon: {
+    fontSize: "1.25em",
+    width: "100%",
+    marginLeft: "max(1em, 2vw)",
+  },
+  button: {
+    bottom: "3em",
+    alignSelf: "center",
+    paddingY: "1em",
+    paddingX: "3vh",
+    borderRadius: "5em",
+    minWidth: "12em",
+    color: "white",
+    fontSize: "1em",
+    fontWeight: "bold",
+    background: "#1A202C",
+    boxShadow:
+      "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
   },
 };

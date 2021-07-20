@@ -15,6 +15,7 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
     handleSubmit,
     register,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm();
 
@@ -69,11 +70,27 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
     },
   });
 
-  const passwordRegister =
+  // const passwordRegister =
+  //   isRegistered &&
+  //   register("password", {
+  //     required: "This field is required",
+  //   });
+
+  // Individual registration allows for onChange destructure
+  const { onChange, ...passwordRegister } =
     isRegistered &&
     register("password", {
       required: "This field is required",
     });
+
+  // Reset global errors on password field change
+  const handlePasswordChange = (e) => {
+    if (errors.credentials) {
+      clearErrors("credentials");
+    }
+    // Must pass onChange to keep useForm default bahaviour
+    onChange(e);
+  };
 
   return (
     <Flex {...styles.wrapper}>
@@ -103,6 +120,7 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
               placeholder="Your password"
               {...styles.input}
               {...passwordRegister}
+              onChange={handlePasswordChange}
             />
             {errors.password && (
               <Text {...styles.error}>{errors.password.message}</Text>
@@ -111,7 +129,9 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
         )}
 
         {errors.credentials && (
-          <Text {...styles.error}>{errors.credentials.message}</Text>
+          <Text {...styles.error} marginTop="-3">
+            {errors.credentials.message}
+          </Text>
         )}
 
         <Button type="submit" {...styles.button}>

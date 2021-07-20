@@ -35,6 +35,8 @@ app.use(
   })
 );
 
+// Must manually create session table
+// Command: psql slide < node_modules/connect-pg-simple/table.sql
 // Set up Postgres Store
 const PgStore = connectPg(session);
 

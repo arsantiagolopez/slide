@@ -50,7 +50,6 @@ const styles = {
     paddingX: { base: "1.5em", md: "10vw" },
   },
   heading: {
-    letterSpacing: "tighter",
     fontSize: { base: "3xl", md: "4xl" },
   },
   content: {

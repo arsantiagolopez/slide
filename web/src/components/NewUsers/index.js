@@ -6,7 +6,7 @@ import {
   IoPeopleSharp,
 } from "react-icons/io5";
 
-const NewUsers = () => {
+const NewUsers = ({ height }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const users = [
@@ -143,6 +143,7 @@ const NewUsers = () => {
       {...styles.wrapper}
       width={{ base: "100%", md: !isCollapsed ? "20vw" : "5vw" }}
       minWidth={!isCollapsed ? "15em" : "5em"}
+      height={height}
     >
       <Flex {...styles.bar} onClick={() => setIsCollapsed(!isCollapsed)}>
         {isCollapsed ? (
@@ -194,17 +195,14 @@ const styles = {
     display: { base: "none", md: "flex" },
     zIndex: 1,
     direction: "column",
-    marginTop: "-6em",
-    height: "100vh",
+    marginTop: "-3.5em",
     paddingTop: "1.25em",
     background: "gray.800",
     transition: "all 0.2s",
-    minHeight: "calc(100% + 3.5em)",
     boxShadow: "-3vw 0 10vw 5vw white",
-    minHeight: "calc(100% + 6em)",
+    minHeight: "calc(100% + 3.5em)",
   },
   bar: {
-    marginTop: "1.5em",
     justify: "space-between",
     align: "center",
     width: "100%",
@@ -220,7 +218,6 @@ const styles = {
   heading: {
     color: "white",
     size: "lg",
-    letterSpacing: "tighter",
     isTruncated: true,
   },
   content: {

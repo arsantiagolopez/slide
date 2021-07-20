@@ -53,6 +53,7 @@ const components = {
   Heading: {
     baseStyle: {
       color: "gray.800",
+      letterSpacing: "tighter",
     },
   },
   Text: {

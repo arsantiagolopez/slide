@@ -42,6 +42,7 @@ export default `
   type Query {
     me: User
     userRegistered(email: String!): Boolean!
+    getNewestUsers: [User]!
   }
 
   type Mutation {

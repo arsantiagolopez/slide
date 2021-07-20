@@ -24,6 +24,22 @@ export default {
       if (emailExists) return true;
       return false;
     },
+    // Get newest users (last 30)
+    getNewestUsers: async (_, __, { models, req }) => {
+      const myId = req.session.userId;
+
+      // Return null if not logged in
+      if (!myId) return null;
+
+      const newestUsers = await models.User.findAll({
+        limit: 3,
+        order: [["createdAt", "DESC"]],
+      });
+
+      console.log(newestUsers);
+
+      return newestUsers;
+    },
   },
   Mutation: {
     // Sign user up locally, log them in & return their profile

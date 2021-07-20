@@ -62,7 +62,6 @@ const styles = {
   },
   name: {
     isTruncated: true,
-    letterSpacing: "tighter",
     fontSize: { base: "1.25em", md: "1.5em" },
     paddingY: "0.5rem",
     borderBottom: "3px solid black",

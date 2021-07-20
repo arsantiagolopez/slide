@@ -1,5 +1,6 @@
 import { Flex } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDimensions } from "../../utils/useDimensions";
 import { NewUsers } from "../NewUsers";
 import { UserList } from "../UserList";
 
@@ -82,6 +83,12 @@ const Dashboard = () => {
     },
   ];
 
+  const [screenHeight, setScreenHeight] = useState(null);
+
+  const { height } = useDimensions();
+
+  useEffect(() => setScreenHeight(height), [height]);
+
   return (
     <Flex {...styles.wrapper}>
       <Flex {...styles.left}>
@@ -98,7 +105,7 @@ const Dashboard = () => {
       </Flex>
 
       <Flex {...styles.right}>
-        <NewUsers />
+        <NewUsers height={screenHeight} />
       </Flex>
     </Flex>
   );
