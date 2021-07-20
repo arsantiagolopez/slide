@@ -1,7 +1,7 @@
-import { Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import Head from "next/head";
 import React from "react";
+import { Inbox } from "../components/Inbox";
 import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Messages = () => {
@@ -11,15 +11,9 @@ const Messages = () => {
         <title>Slide - Messages</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Flex {...styles.wrapper}></Flex>
+      <Inbox />
     </>
   );
 };
 
 export default withUrqlClient(createUrqlClient)(Messages);
-
-// Styles
-
-const styles = {
-  wrapper: {},
-};

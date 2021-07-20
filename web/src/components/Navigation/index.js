@@ -14,6 +14,7 @@ const Navigation = ({ isLogin }) => {
   useEffect(() => setScreenDimensions(dimensions), [dimensions.width]);
 
   const avatarProps = { isDesktop };
+  const logoProps = { isLogin };
 
   return (
     <>
@@ -28,7 +29,7 @@ const Navigation = ({ isLogin }) => {
             <Avatar {...avatarProps} />
           </Flex>
         )}
-        <Logo />
+        <Logo {...logoProps} />
       </Flex>
     </>
   );

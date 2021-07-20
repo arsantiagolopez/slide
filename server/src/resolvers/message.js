@@ -85,9 +85,9 @@ export default {
 
       // Only get needed profile values
       const userProfiles = users.map((user) => {
-        const { userId, fullName, picture } = user.UserProfile;
+        const { userId, name, picture } = user.UserProfile;
 
-        return { userId, fullName, picture };
+        return { userId, name, picture };
       });
 
       return userProfiles;
@@ -180,10 +180,10 @@ export default {
   Mutation: {
     createMessage: async (
       _,
-      { input: { senderId, recipientId, plateId, body } },
+      { input: { senderId, recipientId, body } },
       { models, req }
     ) => {
-      // TODO: REMOVE senderId arg and line 202 "senderId ||"
+      // TODO: REMOVE senderId arg and line 191 "senderId ||"
       // This is just for trial without having to log into account
       const myId = req.session.userId;
 
@@ -191,7 +191,6 @@ export default {
         senderId: senderId || myId,
         recipientId,
         body,
-        plateId,
       });
 
       // Create websocket that listens to any messages by or for you

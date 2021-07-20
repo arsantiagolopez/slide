@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const Logo = () => (
-  <Box {...styles.wrapper}>
+const Logo = ({ isLogin }) => (
+  <Box {...styles.wrapper} width={isLogin ? "40%" : "10%"}>
     <Link href="/">
       <a>
         <Image src="/word.png" {...styles.image} />
@@ -21,7 +21,6 @@ const styles = {
   wrapper: {
     position: "relative",
     height: "100%",
-    width: "10%",
     userSelect: "none",
   },
   image: {

@@ -69,16 +69,15 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
     router.push("/login");
   };
 
-  const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
-
-  const updateAvatarProps = { setAvatarSrc };
-
   // Update user avatar if user
   useEffect(() => {
     if (user) {
       setAvatarSrc(user?.me?.picture);
     }
   }, [user]);
+
+  const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
+  const updateAvatarProps = { setAvatarSrc };
 
   return (
     <>

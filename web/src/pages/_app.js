@@ -3,8 +3,6 @@ import { Layout } from "../components/Layout";
 import "../styles/global.css";
 import theme from "../theme";
 
-// import store from '../store'
-
 const MyApp = ({ Component, pageProps }) => {
   // Persistent layout pattern for better UX
   const getLayout = Component.getLayout || ((page) => <Layout>{page}</Layout>);

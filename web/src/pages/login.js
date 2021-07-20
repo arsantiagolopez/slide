@@ -13,7 +13,6 @@ const Login = () => {
   const [email, setEmail] = useState(null);
 
   const loginProps = { isRegistered, setIsRegistered, setIsLogin, setEmail };
-
   const signupProps = { setIsLogin, email };
 
   return (

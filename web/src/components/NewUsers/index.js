@@ -208,6 +208,7 @@ const styles = {
     justify: "space-between",
     align: "center",
     width: "100%",
+    height: "3em",
     paddingX: "1.5em",
     paddingY: "0.5em",
     cursor: "pointer",

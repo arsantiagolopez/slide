@@ -3,7 +3,6 @@ export default `
     id: String!
     senderId: String!
     recipientId: String!
-    plateId: String
     body: String!
     seen: Boolean!
     archivedBy: [String]
@@ -22,7 +21,7 @@ export default `
 
   type MessageUserProfiles {
     userId: String!
-    fullName: String
+    name: String
     picture: String
   }
 
@@ -34,7 +33,6 @@ export default `
   input MessageInput {
     senderId: String
     recipientId: String!
-    plateId: String
     body: String!
   }
 
