@@ -8,6 +8,8 @@ import { Me as MeQuery } from "../graphql/queries/user";
 
 const SERVER_URL = Config.serverUrl;
 
+// TODO: before prod: localhost:8000
+
 const subscriptionClient = new SubscriptionClient(
   "ws://localhost:8000/graphql",
   {

@@ -14,10 +14,10 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "postgress",
-    "password": null,
-    "database": "slide",
-    "host": "localhost",
+    "username": "test",
+    "password": "test",
+    "database": "test",
+    "host": "test",
     "dialect": "postgres"
   }
 }

@@ -81,7 +81,6 @@ const apolloServer = new ApolloServer({
     req,
     res,
     session: req ? req.session : "",
-    // If problems with picture and item models, delete "req &&"
     url: req ? `${req.protocol}://${req.get("host")}` : "", // Current url of server
     connection,
   }),
