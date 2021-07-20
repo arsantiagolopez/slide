@@ -32,7 +32,7 @@ const styles = {
     height: "5em",
     align: "center",
     justify: "center",
-    paddingX: "10vw",
+    paddingX: "15vw",
     paddingY: "2em",
   },
   avatar: {

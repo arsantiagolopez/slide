@@ -23,12 +23,16 @@ export default {
   },
 
   Query: {
-    getUniqueMessageUserIds: async (_, args, { models, req }) => {
-      // This is the entry point of the messages page
-      // Returns unique ids array of users you have messages with (newest to oldest)
-      // Check for possible archived conversations to prevent passed Id
-      // of archived messages
+    /**
+     * This is the entry point of the messages page
+     * @returns an ordered array of the unique IDs of users you
+     * have interacted with (newest to oldest)
+     */
 
+    // TODO ?? :     // Check for possible archived conversations to prevent passed Id
+    // of archived messages
+
+    getUniqueMessageUserIds: async (_, __, { models, req }) => {
       const myId = req.session.userId;
 
       // Get only messages not archived by me
@@ -59,8 +63,8 @@ export default {
         order: [["created_at", "DESC"]],
       });
 
-      // Return the right id of user other than self
-      const userIds = messages.map((message) => {
+      // Return id of user other than self
+      const ids = messages.map((message) => {
         const {
           dataValues: { senderId, recipientId },
         } = message;
@@ -71,33 +75,45 @@ export default {
         else return senderId;
       });
 
-      return [...new Set(userIds)];
+      return [...new Set(ids)];
     },
+    /**
+     * Get users' profile information
+     *
+     * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
+     *
+     * @returns an array of user profiles.
+     */
     getMessageUserProfiles: async (_, { userIds }, { models }) => {
       const users = await models.User.findAll({
         where: { id: userIds },
-        include: { model: models.UserProfile },
       });
 
-      if (!users) {
-        return [];
-      }
+      if (!users) return [];
 
       // Only get needed profile values
-      const userProfiles = users.map((user) => {
-        const { userId, name, picture } = user.UserProfile;
+      const profiles = users.map(({ id, name, picture }) => ({
+        userId: id,
+        name,
+        picture,
+      }));
 
-        return { userId, name, picture };
-      });
-
-      return userProfiles;
+      return profiles;
     },
+
+    /**
+     * Get newest message for every user.
+     *
+     * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
+     *
+     * @returns an array of messages.
+     */
+
     getNewestMessageByUsers: async (_, { userIds }, { models, req }) => {
       const myId = req.session.userId;
 
-      // TODO: Make sure this async/await inside of map works, it seems to work with small data
       const messages = userIds.map(async (userId) => {
-        // Get the latest message between a two user conversation
+        // Get the latest message between two users
         const newest = await models.Message.findOne({
           where: {
             [Op.or]: [
@@ -123,9 +139,17 @@ export default {
 
       return messages;
     },
+
+    /**
+     * Get the recent conversations between you and users for caching purposes.
+     *
+     * @param {int} last - Number of conversations to query
+     * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
+     *
+     * @returns an array of conversations with message data.
+     */
+
     getRecentConversations: async (_, { last, userIds }, { models, req }) => {
-      // Last is the number of conversations to be queried
-      // userIds is the ordered array of users you have messages with (newest to oldest)
       const myId = req.session.userId;
 
       // Get only the last (x) conversations
@@ -157,6 +181,15 @@ export default {
 
       return conversations;
     },
+
+    /**
+     * Get conversation with user.
+     *
+     * @param {string} userId - User ID.
+     *
+     * @returns an array of messages.
+     */
+
     getUserConversation: async (_, { userId }, { models, req }) => {
       const myId = req.session.userId;
 
@@ -178,6 +211,16 @@ export default {
     },
   },
   Mutation: {
+    /**
+     * Create a message directed towards a user.
+     *
+     * @param {string} senderId - ID of the sender.
+     * @param {string} recipientId - ID of the recipient.
+     * @param {string} body - Text message body.
+     *
+     * @returns a success response in the form of { success: true }
+     */
+
     createMessage: async (
       _,
       { input: { senderId, recipientId, body } },
@@ -260,7 +303,13 @@ export default {
         success: true,
       };
     },
-    // Mark all messages from user as seen
+    /**
+     * Update all messages sent to you by user, NOT yours sent to them.
+     *
+     * @param {string} userId - User ID.
+     *
+     * @returns a success response in the form of { success: true }
+     */
     updateSeenStatus: async (_, { userId }, { models, req }) => {
       const myId = req.session.userId;
 

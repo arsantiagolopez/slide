@@ -47,7 +47,7 @@ const styles = {
   bar: {
     position: "sticky",
     justify: "space-between",
-    paddingX: { base: "1.5em", md: "10vw" },
+    paddingX: { base: "1.5em", md: "15vw" },
   },
   heading: {
     fontSize: { base: "3xl", md: "4xl" },
@@ -60,7 +60,7 @@ const styles = {
   },
   spaceBlock: {
     display: { base: "none", md: "flex" },
-    minWidth: "10vw",
+    minWidth: "15vw",
     height: "100%",
     pointerEvents: "none",
   },

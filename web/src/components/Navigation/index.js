@@ -22,7 +22,7 @@ const Navigation = ({ isLogin, isDesktop, user, pathname }) => {
       {
         // User links
         user?.me && !isLogin && (
-          <Flex {...styles.avatar} left={isDesktop ? "10vw" : "1em"}>
+          <Flex {...styles.avatar} left={isDesktop ? "15vw" : "1em"}>
             <Avatar {...avatarProps} />
             <>
               {

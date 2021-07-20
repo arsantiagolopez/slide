@@ -41,25 +41,25 @@ app.use(
 const PgStore = connectPg(session);
 
 // Session configuration
-app.use(
-  session({
-    name: COOKIE_NAME,
-    secret: SESSION_SECRET,
-    resave: false,
-    // Only save data when needed
-    saveUninitialized: false,
-    store: new PgStore(),
-    cookie: {
-      // Lasts 1 day
-      maxAge: 1000 * 60 * 60 * 24,
-      // Set to true if only want to store in HTTPS
-      secure: NODE_ENV === "production",
-      // Prevents client side JS from reading cookie
-      httpOnly: true,
-      sameSite: "lax",
-    },
-  })
-);
+const mySession = session({
+  name: COOKIE_NAME,
+  secret: SESSION_SECRET,
+  resave: false,
+  // Only save data when needed
+  saveUninitialized: false,
+  store: new PgStore(),
+  cookie: {
+    // Lasts 1 day
+    maxAge: 1000 * 60 * 60 * 24,
+    // Set to true if only want to store in HTTPS
+    secure: NODE_ENV === "production",
+    // Prevents client side JS from reading cookie
+    httpOnly: true,
+    sameSite: "lax",
+  },
+});
+
+app.use(mySession);
 
 // Merge schema & create executable schema
 const typeDefs = mergeTypeDefs(loadFilesSync(path.join(__dirname, "./schema")));

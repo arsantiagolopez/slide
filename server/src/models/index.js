@@ -1,5 +1,6 @@
 import Sequelize from "sequelize";
 import Config from "../config";
+import Message from "./Message";
 import User from "./User";
 
 const DATABASE_URL = Config.databaseUrl;
@@ -25,6 +26,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
 
 const models = {
   User: User(sequelize, Sequelize.DataTypes),
+  Message: Message(sequelize, Sequelize.DataTypes),
 };
 
 Object.keys(models).forEach((modelName) => {

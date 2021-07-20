@@ -10,6 +10,7 @@ const colors = {
   primary: chakraTheme.colors.gray["100"],
   secondary: chakraTheme.colors.gray["300"],
   tertiary: chakraTheme.colors.gray["500"],
+  brand: "rgba(255, 235, 100, 1)",
 };
 
 const fonts = {

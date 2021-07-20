@@ -1,6 +1,7 @@
 const Me = `
   query Me {
     me {
+      id
       email
       name
       picture

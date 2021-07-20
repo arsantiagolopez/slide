@@ -1,10 +1,20 @@
 import { cacheExchange } from "@urql/exchange-graphcache";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
-import { dedupExchange } from "urql";
+import ws from "isomorphic-ws";
+import { SubscriptionClient } from "subscriptions-transport-ws";
+import { dedupExchange, subscriptionExchange } from "urql";
 import Config from "../config";
 import { Me as MeQuery } from "../graphql/queries/user";
 
 const SERVER_URL = Config.serverUrl;
+
+const subscriptionClient = new SubscriptionClient(
+  "ws://localhost:8000/graphql",
+  {
+    reconnect: true,
+  },
+  ws
+);
 
 const createUrqlClient = (ssrExchange) => ({
   url: `${SERVER_URL}/graphql`,
@@ -82,6 +92,11 @@ const createUrqlClient = (ssrExchange) => ({
     }),
     ssrExchange,
     multipartFetchExchange,
+    subscriptionExchange({
+      forwardSubscription(operation) {
+        return subscriptionClient.request(operation);
+      },
+    }),
   ],
 });
 
