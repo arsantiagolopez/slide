@@ -1,11 +1,18 @@
 import { Flex } from "@chakra-ui/react";
+import { withUrqlClient } from "next-urql";
 import React, { useEffect, useState } from "react";
+import { useClient } from "urql";
+import {
+  GetMessageUserProfiles as GetMessageUserProfilesQuery,
+  GetUniqueMessageUserIds as GetUniqueMessageUserIdsQuery,
+} from "../../graphql/queries/message";
+import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useDimensions } from "../../utils/useDimensions";
 import { NewUsers } from "../NewUsers";
 import { UserList } from "../UserList";
 
-const Dashboard = () => {
-  const users = [
+const Dashboard = withUrqlClient(createUrqlClient)(() => {
+  const testUsers = [
     {
       id: "1",
       name: "Devin",
@@ -83,22 +90,58 @@ const Dashboard = () => {
     },
   ];
 
+  const [conversations, setConversations] = useState(null);
+  const [friends, setFriends] = useState(null);
+
   const [screenHeight, setScreenHeight] = useState(null);
 
   const { height } = useDimensions();
 
   useEffect(() => setScreenHeight(height), [height]);
 
+  // useQuery promise alternative
+  const client = useClient();
+
+  // Fetch conversations
+  useEffect(async () => {
+    if (!conversations) {
+      const {
+        data: { getUniqueMessageUserIds: userIds },
+      } = await client.query(GetUniqueMessageUserIdsQuery).toPromise();
+
+      const {
+        data: { getMessageUserProfiles },
+      } = await client
+        .query(GetMessageUserProfilesQuery, {
+          userIds,
+        })
+        .toPromise();
+
+      // UserList takes in args: id, name, picture
+      const users = getMessageUserProfiles?.map(
+        ({ userId: id, name, picture }) => ({ id, name, picture })
+      );
+
+      setConversations(users);
+    }
+  }, []);
+
+  // Fetch friends
+  useEffect(async () => {
+    if (!friends) {
+    }
+  }, []);
+
   return (
     <Flex {...styles.wrapper}>
       <Flex {...styles.left}>
         <UserList
-          users={users}
+          users={conversations}
           title="My conversations"
           messageIfEmpty="You haven't started any conversations yet. Spark one up with any newcomers on the side bar!"
         />
         <UserList
-          users={users}
+          users={testUsers}
           title="My friends"
           messageIfEmpty="Life's better with friends. You my friend, have none."
         />
@@ -109,7 +152,7 @@ const Dashboard = () => {
       </Flex>
     </Flex>
   );
-};
+});
 
 export { Dashboard };
 

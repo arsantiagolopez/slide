@@ -15,4 +15,10 @@ const UserRegistered = `
   }
 `;
 
-export { Me, UserRegistered };
+const GetNewestUsers = `
+  query getNewestUsers {
+    getNewestUsers
+  }
+`;
+
+export { Me, UserRegistered, GetNewestUsers };

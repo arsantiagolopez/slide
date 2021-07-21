@@ -36,8 +36,6 @@ export default {
         order: [["createdAt", "DESC"]],
       });
 
-      console.log(newestUsers);
-
       return newestUsers;
     },
   },

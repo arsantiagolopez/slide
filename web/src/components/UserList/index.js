@@ -16,10 +16,10 @@ const UserList = ({ users, title, messageIfEmpty }) => {
       </Flex>
 
       <Flex {...styles.content}>
-        {users.length ? (
+        {users?.length ? (
           <Flex {...styles.cards}>
             <Flex {...styles.spaceBlock} />
-            {users.map((user) => (
+            {users?.map((user) => (
               <Card key={user.id} user={user} {...cardProps} />
             ))}
             <Flex {...styles.spaceBlock} />

@@ -85,7 +85,6 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
         onClick={onOpen}
         ref={buttonRef}
         src={avatarSrc}
-        display={!isOpen ? "block" : "none"}
         {...styles.avatar}
       />
 
