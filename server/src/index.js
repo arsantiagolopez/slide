@@ -1,7 +1,7 @@
 import { loadFilesSync } from "@graphql-tools/load-files";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
-import connectPg from "connect-pg-simple";
+import connectRedis from "connect-redis";
 import cors from "cors";
 import "dotenv-safe/config";
 import express from "express";
@@ -10,6 +10,7 @@ import { applyMiddleware } from "graphql-middleware";
 import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 import path from "path";
+import redis from "redis";
 import Config from "./config";
 import models from "./models";
 
@@ -20,6 +21,7 @@ const COOKIE_NAME = Config.cookieName;
 const NODE_ENV = Config.nodeEnv;
 const SESSION_SECRET = Config.sessionSecret;
 const PORT = Config.port;
+const REDIS_URL = Config.redisUrl;
 
 // Express server
 const app = express();
@@ -35,10 +37,9 @@ app.use(
   })
 );
 
-// Must manually create session table
-// Command: psql slide < node_modules/connect-pg-simple/table.sql
-// Set up Postgres Store
-const PgStore = connectPg(session);
+// Set up Redis Store
+const RedisStore = connectRedis(session);
+const redisClient = redis.createClient(REDIS_URL);
 
 // Session configuration
 const mySession = session({
@@ -47,7 +48,7 @@ const mySession = session({
   resave: false,
   // Only save data when needed
   saveUninitialized: false,
-  store: new PgStore(),
+  store: new RedisStore({ client: redisClient }),
   cookie: {
     // Lasts 1 day
     maxAge: 1000 * 60 * 60 * 24,

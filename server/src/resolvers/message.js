@@ -79,9 +79,7 @@ export default {
     },
     /**
      * Get users' profile information
-     *
      * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
-     *
      * @returns an array of user profiles.
      */
     getMessageUserProfiles: async (_, { userIds }, { models }) => {
@@ -103,9 +101,7 @@ export default {
 
     /**
      * Get newest message for every user.
-     *
      * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
-     *
      * @returns an array of messages.
      */
 
@@ -142,10 +138,8 @@ export default {
 
     /**
      * Get the recent conversations between you and users for caching purposes.
-     *
      * @param {int} last - Number of conversations to query
      * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
-     *
      * @returns an array of conversations with message data.
      */
 
@@ -184,9 +178,7 @@ export default {
 
     /**
      * Get conversation with user.
-     *
      * @param {string} userId - User ID.
-     *
      * @returns an array of messages.
      */
 
@@ -213,11 +205,9 @@ export default {
   Mutation: {
     /**
      * Create a message directed towards a user.
-     *
      * @param {string} senderId - ID of the sender.
      * @param {string} recipientId - ID of the recipient.
      * @param {string} body - Text message body.
-     *
      * @returns a success response in the form of { success: true }
      */
 
@@ -305,9 +295,7 @@ export default {
     },
     /**
      * Update all messages sent to you by user, NOT yours sent to them.
-     *
      * @param {string} userId - User ID.
-     *
      * @returns a success response in the form of { success: true }
      */
     updateSeenStatus: async (_, { userId }, { models, req }) => {

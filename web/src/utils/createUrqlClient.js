@@ -29,49 +29,17 @@ const createUrqlClient = (ssrExchange) => ({
     cacheExchange({
       updates: {
         Mutation: {
-          register: (result, _, cache) => {
-            const { register } = result;
+          signup: (result, _, cache) => {
+            const { signup } = result;
 
-            // Log user in on register
-            cache.updateQuery({ query: MeQuery }, (data) => {
-              if (register.errors) {
-                return data;
-              }
-              return {
-                me: register.profile,
-              };
-            });
-
-            // Update profile picture query
-            cache.invalidate("Query", "myProfilePicture");
-
-            // Update my own profile information
-            cache.invalidate("Query", "myProfile");
-
-            // // Manually update query, inefficient to invalidate all users
-            // cache.updateQuery({ query: AllUserProfilesQuery }, (data) => {
-            //   if (register.errors) {
-            //     return data;
-            //   }
-
-            //   // Add new user to cache
-            //   return {
-            //     allUserProfiles: [...data.allUserProfiles, register.profile],
-            //   };
-            // });
+            // Log user in on signup
+            cache.invalidate("Query", "meQuery");
           },
           login: (result, _, cache) => {
             const { login } = result;
 
             // Log user in
-            cache.updateQuery({ query: MeQuery }, (data) => {
-              if (login.errors) {
-                return data;
-              }
-              return {
-                me: login.user,
-              };
-            });
+            cache.invalidate("Query", "meQuery");
 
             // Update profile picture query
             cache.invalidate("Query", "myProfilePicture");
