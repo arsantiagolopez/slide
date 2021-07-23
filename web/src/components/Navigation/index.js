@@ -83,6 +83,6 @@ const styles = {
     variant: "unstyled",
     fontSize: "1.25em",
     // width: "100%",
-    marginLeft: "max(1em, 2vw)",
+    marginLeft: { base: "0.75em", md: "2em" },
   },
 };

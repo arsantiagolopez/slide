@@ -38,13 +38,11 @@ const UpdateAvatar = ({ children, setAvatarSrc }) => {
           data: { updateProfile },
         } = await updateProfileMutation({ input: { picture } });
 
-        console.log(updateProfile);
-
         // Avatar successfully updated
         if (updateProfile.user) {
           console.log(file.preview);
           // Temporarily change avatar's src
-          setAvatarSrc(`url("${file.preview}")`);
+          setAvatarSrc(file.preview);
         }
       }
     },
