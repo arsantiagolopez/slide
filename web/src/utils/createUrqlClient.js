@@ -10,10 +10,17 @@ const SERVER_URL = Config.serverUrl;
 
 // Replace "https://" with "ws://"
 // Subscription client URL must be in the format "ws://{domain}"
-const urlToWs = (url) => url.replace("https", "ws");
+const httpToWs = (url) => {
+  if (url.includes("https")) {
+    return url.replace("https", "wss");
+  }
+  // If development, "http" instead of "https"
+  return url.replace("http", "wss");
+};
+const socketUrl = `${httpToWs(SERVER_URL)}/graphql`;
 
 const subscriptionClient = new SubscriptionClient(
-  `${urlToWs(SERVER_URL)}/graphql`,
+  socketUrl,
   {
     reconnect: true,
   },

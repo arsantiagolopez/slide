@@ -13,10 +13,14 @@ export default {
     me: (_, __, { models, req }) => {
       const myId = req.session.userId;
 
+      console.log("***MyId ,", myId);
       // Return null if not logged in
       if (!myId) return null;
 
-      return models.User.findOne({ where: { id: myId } });
+      const user = models.User.findOne({ where: { id: myId } });
+
+      console.log("**** User: ", user);
+      return user;
     },
     // Returns true if user with email exists
     userRegistered: async (_, { email }, { models }) => {
