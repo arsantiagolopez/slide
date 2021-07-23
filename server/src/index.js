@@ -9,8 +9,8 @@ import session from "express-session";
 import { applyMiddleware } from "graphql-middleware";
 import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
+import Redis from "ioredis";
 import path from "path";
-import redis from "redis";
 import Config from "./config";
 import models from "./models";
 
@@ -39,7 +39,7 @@ app.use(
 
 // Set up Redis Store
 const RedisStore = connectRedis(session);
-const redisClient = redis.createClient(REDIS_URL);
+const redisClient = new Redis(REDIS_URL);
 
 // Session configuration
 const mySession = session({

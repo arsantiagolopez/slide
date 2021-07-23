@@ -33,13 +33,13 @@ const createUrqlClient = (ssrExchange) => ({
             const { signup } = result;
 
             // Log user in on signup
-            cache.invalidate("Query", "meQuery");
+            cache.invalidate("Query", "me");
           },
           login: (result, _, cache) => {
             const { login } = result;
 
             // Log user in
-            cache.invalidate("Query", "meQuery");
+            cache.invalidate("Query", "me");
 
             // Update profile picture query
             cache.invalidate("Query", "myProfilePicture");

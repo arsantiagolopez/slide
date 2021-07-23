@@ -5,11 +5,13 @@ import { IoFileTrayFull, IoHome } from "react-icons/io5";
 import { Avatar } from "../../components/Avatar";
 import { Logo } from "../../components/Logo";
 
-const Navigation = ({ isLogin, isDesktop, user, pathname }) => {
-  const avatarProps = { isDesktop };
+const Navigation = ({ isLogin, user, pathname }) => {
+  const avatarProps = { user };
   const logoProps = { isLogin };
 
   const isMessages = pathname.includes("/messages");
+
+  console.log("from Navigation comp: ", user, pathname);
 
   return (
     <Flex
@@ -22,7 +24,7 @@ const Navigation = ({ isLogin, isDesktop, user, pathname }) => {
       {
         // User links
         user?.me && !isLogin && (
-          <Flex {...styles.avatar} left={isDesktop ? "15vw" : "1em"}>
+          <Flex {...styles.avatar}>
             <Avatar {...avatarProps} />
             <>
               {
@@ -71,9 +73,10 @@ const styles = {
   avatar: {
     zIndex: 5,
     position: "absolute",
-    boxSize: "max(2vh, 2em)",
+    left: { base: "1em", md: "15vw" },
   },
   icon: {
+    variant: "unstyled",
     fontSize: "1.25em",
     width: "100%",
     marginLeft: "max(1em, 2vw)",

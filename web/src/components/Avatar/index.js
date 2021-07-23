@@ -8,7 +8,6 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackSharp } from "react-icons/io5";
@@ -18,17 +17,13 @@ import {
   Logout as LogoutMutation,
   UpdateProfile as UpdateProfileMutation,
 } from "../../graphql/mutations/user";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import { showToast } from "../../utils/showToast";
-import { useUser } from "../../utils/useUser";
 import { UpdateAvatar } from "../UpdateAvatar";
 
-const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
+const Avatar = ({ user }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const { user } = useUser({ redirectTo: "/login" });
 
   const [, updateProfileMutation] = useMutation(UpdateProfileMutation);
 
@@ -95,8 +90,8 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
         finalFocusRef={buttonRef}
         {...styles.drawer}
       >
-        <DrawerContent maxWidth={isDesktop ? "30vw" : "100%"}>
-          <Flex paddingX={isDesktop ? "3em" : "2em"} {...styles.body}>
+        <DrawerContent {...styles.content}>
+          <Flex {...styles.body}>
             <Flex {...styles.drawerNav}>
               <Icon
                 as={IoArrowBackSharp}
@@ -107,11 +102,7 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
             </Flex>
 
             <UpdateAvatar {...updateAvatarProps}>
-              <Image
-                src={avatarSrc}
-                style={styles.picture}
-                boxSize={isDesktop ? "15vw" : "50vw"}
-              />
+              <Image src={avatarSrc} style={styles.picture} />
             </UpdateAvatar>
 
             <Flex {...styles.field}>
@@ -133,7 +124,7 @@ const Avatar = withUrqlClient(createUrqlClient)(({ isDesktop }) => {
       </Drawer>
     </>
   );
-});
+};
 
 export { Avatar };
 
@@ -151,6 +142,9 @@ const styles = {
   drawer: {
     placement: "left",
   },
+  content: {
+    maxWidth: { base: "100%", md: "30vw" },
+  },
   body: {
     zIndex: 1000,
     background: "white",
@@ -159,6 +153,7 @@ const styles = {
     align: "center",
     height: "100%",
     boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+    paddingX: { base: "2em", md: "3em" },
   },
   drawerNav: {
     direction: "row",
@@ -178,6 +173,7 @@ const styles = {
       "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
     borderRadius: "50%",
     objectFit: "cover",
+    boxSize: { base: "50vw", md: "15vw" },
   },
   field: {
     direction: "column",

@@ -1,19 +1,30 @@
 import { Flex } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
 import Head from "next/head";
 import React, { useState } from "react";
 import { getLayout } from "../components/Layout";
 import { Login as LoginComponent } from "../components/Login";
 import { Signup } from "../components/Signup";
-import { createUrqlClient } from "../utils/createUrqlClient";
 
-const Login = () => {
+const Login = (props) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isRegistered, setIsRegistered] = useState(false);
   const [email, setEmail] = useState(null);
 
+  // const router = useRouter();
+
+  // const { user } = useUser({ redirectTo: "/login" });
+
   const loginProps = { isRegistered, setIsRegistered, setIsLogin, setEmail };
   const signupProps = { setIsLogin, email };
+
+  // // If logged in, redirect home
+  // useEffect(async () => {
+  //   if (user?.me) {
+  //     router.replace("/");
+  //   }
+  // }, [user]);
+
+  // console.log(props);
 
   return (
     <>
@@ -37,7 +48,7 @@ const Login = () => {
 // Persistent layout
 Login.getLayout = getLayout;
 
-export default withUrqlClient(createUrqlClient)(Login);
+export default Login;
 
 // Styles
 

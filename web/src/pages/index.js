@@ -1,10 +1,8 @@
-import { withUrqlClient } from "next-urql";
 import Head from "next/head";
 import React from "react";
 import { Dashboard } from "../components/Dashboard";
 import { getLayout } from "../components/Layout";
 import { LoadingScreen } from "../components/LoadingScreen";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import { useUser } from "../utils/useUser";
 
 const Index = () => {
@@ -29,4 +27,4 @@ const Index = () => {
 // Persistent layout
 Index.getLayout = getLayout;
 
-export default withUrqlClient(createUrqlClient)(Index);
+export default Index;
