@@ -56,7 +56,7 @@ const mySession = session({
     secure: NODE_ENV === "production",
     // Prevents client side JS from reading cookie
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: NODE_ENV === "production" ? "none" : "lax",
   },
 });
 
