@@ -26,6 +26,7 @@ const REDIS_URL = Config.redisUrl;
 // Express server
 const app = express();
 
+// "trust proxy" needed to allow cookie forwarding
 app.set("trust proxy", 1);
 
 // Enable uploads on the graphQL server
