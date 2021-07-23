@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
 
   useEffect(() => setScreenHeight(height), [height]);
 
-  const navigationProps = { isLogin, pathname };
+  const navigationProps = { isLogin, screenHeight, pathname };
   const footerProps = { hideFooter: !isLogin };
 
   return (

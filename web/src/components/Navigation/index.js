@@ -6,7 +6,7 @@ import { Avatar } from "../../components/Avatar";
 import { Logo } from "../../components/Logo";
 import { UserContext } from "../../context/UserContext";
 
-const Navigation = ({ isLogin, pathname }) => {
+const Navigation = ({ isLogin, screenHeight, pathname }) => {
   const { user } = useContext(UserContext);
 
   const isMessages = pathname.includes("/messages");
@@ -17,8 +17,9 @@ const Navigation = ({ isLogin, pathname }) => {
   return (
     <Flex
       {...styles.wrapper}
-      height={isLogin ? "40vh" : "max(2vh, 1.5em)"}
+      height={isLogin ? `${screenHeight / (5 / 2)}` : "max(2vh, 1.5em)"}
       paddingTop={isLogin ? "25vh" : "none"}
+      bg="red"
     >
       <Logo {...logoProps} />
 
