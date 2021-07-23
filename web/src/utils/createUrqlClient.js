@@ -8,10 +8,12 @@ import { Me as MeQuery } from "../graphql/queries/user";
 
 const SERVER_URL = Config.serverUrl;
 
-// TODO: before prod: localhost:8000
+// Replace "https://" with "ws://"
+// Subscription client URL must be in the format "ws://{domain}"
+const urlToWs = (url) => url.replace("https", "ws");
 
 const subscriptionClient = new SubscriptionClient(
-  "ws://localhost:8000/graphql",
+  `${urlToWs(SERVER_URL)}/graphql`,
   {
     reconnect: true,
   },

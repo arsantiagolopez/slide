@@ -19,7 +19,6 @@ const Navigation = ({ isLogin, screenHeight, pathname }) => {
       {...styles.wrapper}
       height={isLogin ? `${screenHeight / (5 / 2)}` : "max(2vh, 1.5em)"}
       paddingTop={isLogin ? "25vh" : "none"}
-      bg="red"
     >
       <Logo {...logoProps} />
 
