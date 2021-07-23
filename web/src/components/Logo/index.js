@@ -19,6 +19,7 @@ export { Logo };
 
 const styles = {
   wrapper: {
+    zIndex: 10,
     position: "relative",
     height: "100%",
     userSelect: "none",

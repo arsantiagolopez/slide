@@ -1,17 +1,18 @@
 import { Flex, IconButton } from "@chakra-ui/react";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 import { IoFileTrayFull, IoHome } from "react-icons/io5";
 import { Avatar } from "../../components/Avatar";
 import { Logo } from "../../components/Logo";
+import { UserContext } from "../../context/UserContext";
 
-const Navigation = ({ isLogin, user, pathname }) => {
-  const avatarProps = { user };
-  const logoProps = { isLogin };
+const Navigation = ({ isLogin, pathname }) => {
+  const { user } = useContext(UserContext);
 
   const isMessages = pathname.includes("/messages");
 
-  console.log("from Navigation comp: ", user, pathname);
+  const logoProps = { isLogin };
+  const avatarProps = { user };
 
   return (
     <Flex
@@ -73,26 +74,15 @@ const styles = {
   avatar: {
     zIndex: 5,
     position: "absolute",
-    left: { base: "1em", md: "15vw" },
+    paddingLeft: { base: "1em", md: "15vw" },
+    align: "center",
+    justify: "flex-start",
+    width: "100%",
   },
   icon: {
     variant: "unstyled",
     fontSize: "1.25em",
-    width: "100%",
+    // width: "100%",
     marginLeft: "max(1em, 2vw)",
-  },
-  button: {
-    bottom: "3em",
-    alignSelf: "center",
-    paddingY: "1em",
-    paddingX: "3vh",
-    borderRadius: "5em",
-    minWidth: "12em",
-    color: "white",
-    fontSize: "1em",
-    fontWeight: "bold",
-    background: "#1A202C",
-    boxShadow:
-      "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
   },
 };

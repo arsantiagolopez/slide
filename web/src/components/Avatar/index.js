@@ -65,11 +65,7 @@ const Avatar = ({ user }) => {
   };
 
   // Update user avatar if user
-  useEffect(() => {
-    if (user) {
-      setAvatarSrc(user?.me?.picture);
-    }
-  }, [user]);
+  useEffect(() => setAvatarSrc(user?.me?.picture), [user]);
 
   const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
   const updateAvatarProps = { setAvatarSrc };
@@ -102,7 +98,7 @@ const Avatar = ({ user }) => {
             </Flex>
 
             <UpdateAvatar {...updateAvatarProps}>
-              <Image src={avatarSrc} style={styles.picture} />
+              <Image src={avatarSrc} {...styles.picture} />
             </UpdateAvatar>
 
             <Flex {...styles.field}>
@@ -135,9 +131,9 @@ const styles = {
     cursor: "pointer",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-    width: "100%",
     borderRadius: "50%",
     objectFit: "cover",
+    boxSize: "2.5em",
   },
   drawer: {
     placement: "left",
@@ -173,7 +169,7 @@ const styles = {
       "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
     borderRadius: "50%",
     objectFit: "cover",
-    boxSize: { base: "50vw", md: "15vw" },
+    boxSize: { base: "60vw", md: "15vw" },
   },
   field: {
     direction: "column",
