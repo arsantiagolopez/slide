@@ -26,6 +26,8 @@ const REDIS_URL = Config.redisUrl;
 // Express server
 const app = express();
 
+app.set("trust proxy", 1);
+
 // Enable uploads on the graphQL server
 app.use(graphqlUploadExpress());
 
@@ -56,7 +58,7 @@ const mySession = session({
     secure: NODE_ENV === "production",
     // Prevents client side JS from reading cookie
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: NODE_ENV === "production" ? "none" : "lax",
   },
 });
 
