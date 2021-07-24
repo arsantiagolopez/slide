@@ -8,20 +8,25 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { useMutation } from "urql";
 import { Editable } from "../../components/Editable";
+import { UserContext } from "../../context/UserContext";
 import {
   Logout as LogoutMutation,
   UpdateProfile as UpdateProfileMutation,
 } from "../../graphql/mutations/user";
+import { createUrqlClient } from "../../utils/createUrqlClient";
 import { showToast } from "../../utils/showToast";
 import { UpdateAvatar } from "../UpdateAvatar";
 
-const Avatar = ({ user }) => {
+const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
+
+  const { avatar } = useContext(UserContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -72,12 +77,13 @@ const Avatar = ({ user }) => {
 
   return (
     <>
-      <Image
-        onClick={onOpen}
-        ref={buttonRef}
-        src={avatarSrc}
-        {...styles.avatar}
-      />
+      <Flex onClick={onOpen} ref={buttonRef}>
+        {avatarSrc ? (
+          <Image src={avatarSrc} {...styles.avatar} />
+        ) : (
+          <Flex background={avatar} {...styles.avatar} />
+        )}
+      </Flex>
 
       <Drawer
         isOpen={isOpen}
@@ -98,7 +104,17 @@ const Avatar = ({ user }) => {
             </Flex>
 
             <UpdateAvatar {...updateAvatarProps}>
-              <Image src={avatarSrc} {...styles.picture} />
+              <Flex>
+                {avatarSrc ? (
+                  <Image
+                    src={avatarSrc}
+                    background={!avatarSrc && avatar}
+                    {...styles.picture}
+                  />
+                ) : (
+                  <Flex background={avatar} {...styles.picture} />
+                )}
+              </Flex>
             </UpdateAvatar>
 
             <Flex {...styles.field}>
@@ -120,7 +136,7 @@ const Avatar = ({ user }) => {
       </Drawer>
     </>
   );
-};
+});
 
 export { Avatar };
 

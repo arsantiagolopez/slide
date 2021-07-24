@@ -16,7 +16,7 @@ const Card = ({ user, active, setActive, type }) => {
   // open detailed preview otherwise
   const handleClick = () => {
     if (type === "conversations") {
-      router.push({
+      return router.push({
         pathname: "/messages",
         query: { user: id },
       });
