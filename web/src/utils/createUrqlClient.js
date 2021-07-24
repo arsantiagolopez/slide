@@ -15,7 +15,7 @@ const httpToWs = (url) => {
     return url.replace("https", "wss");
   }
   // If development, "http" instead of "https"
-  return url.replace("http", "wss");
+  return url.replace("http", "ws");
 };
 const socketUrl = `${httpToWs(SERVER_URL)}/graphql`;
 

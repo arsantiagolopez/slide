@@ -17,8 +17,41 @@ const UserRegistered = `
 
 const GetNewestUsers = `
   query getNewestUsers {
-    getNewestUsers
+    getNewestUsers {
+      id
+      email
+      name
+      picture
+    }
   }
 `;
 
-export { Me, UserRegistered, GetNewestUsers };
+const GetAllFollowersById = `
+  query getAllFollowersById($id: String!) {
+    getAllFollowersById(id: $id) {
+      id
+      email
+      name
+      picture
+    }
+  }
+`;
+
+const GetAllFollowingById = `
+  query getAllFollowingById($id: String!) {
+    getAllFollowingById(id: $id) {
+      id
+      email
+      name
+      picture
+    }
+  }
+`;
+
+export {
+  Me,
+  UserRegistered,
+  GetNewestUsers,
+  GetAllFollowersById,
+  GetAllFollowingById,
+};

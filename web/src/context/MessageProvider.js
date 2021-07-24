@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import now from "performance-now";
 import React, { useEffect, useState } from "react";
 import { useClient, useMutation, useSubscription } from "urql";
@@ -24,8 +25,11 @@ const MessageProvider = ({ children, myId }) => {
   const [recipientId, setRecipientId] = useState(null);
   const [loadedConversations, setLoadedConversations] = useState(null);
   const [activeTimestamp, setActiveTimestamp] = useState(null);
+  const [query, setQuery] = useState(null);
 
   const [, updateSeenStatus] = useMutation(UpdateSeenStatusMutation);
+
+  const router = useRouter();
 
   // Number of full conversation histories to fetch on mount
   const NUM_OF_RECENT_CONVERSATIONS = 3;
@@ -430,6 +434,20 @@ const MessageProvider = ({ children, myId }) => {
     }
   }, [messageList]);
 
+  // Links that redirect to /messages come with a query.user
+  // parameter containing the userId of the person who's
+  // message should be active. Set to active message
+  useEffect(async () => {
+    if (query && previews) {
+      // Find user object in previews array
+      const message = previews?.find(
+        ({ recipientInfo: { userId } }) => userId === query
+      );
+
+      setActiveMessage(message);
+    }
+  }, [query, previews]);
+
   return (
     <MessageContext.Provider
       value={{
@@ -442,6 +460,8 @@ const MessageProvider = ({ children, myId }) => {
         recipientId,
         loadedConversations,
         activeTimestamp,
+        query,
+        setQuery,
         setActiveTimestamp,
         setLoadedConversations,
         setRecipientId,

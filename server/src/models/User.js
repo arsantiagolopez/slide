@@ -26,7 +26,19 @@ export default (sequelize, DataTypes) => {
   });
 
   // Model associations
-  User.associate = (models) => {};
+  User.associate = (models) => {
+    // Following double join
+    User.belongsToMany(models.User, {
+      as: "follower",
+      through: models.Follow,
+      foreignKey: "followerId",
+    });
+    User.belongsToMany(models.User, {
+      as: "following",
+      through: models.Follow,
+      foreignKey: "followingId",
+    });
+  };
 
   return User;
 };

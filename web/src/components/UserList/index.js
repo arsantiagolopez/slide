@@ -1,12 +1,17 @@
-import { Flex, Heading, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { Flex, Heading, Spinner, Text } from "@chakra-ui/react";
+import React from "react";
 import { Card } from "../Card";
 import { SortBy } from "../SortBy";
 
-const UserList = ({ users, title, messageIfEmpty }) => {
-  const [active, setActive] = useState(null);
-
-  const cardProps = { active, setActive };
+const UserList = ({
+  users,
+  active,
+  setActive,
+  title,
+  type,
+  messageIfEmpty,
+}) => {
+  const cardProps = { active, setActive, type };
 
   return (
     <Flex {...styles.wrapper}>
@@ -15,19 +20,25 @@ const UserList = ({ users, title, messageIfEmpty }) => {
         <SortBy />
       </Flex>
 
-      <Flex {...styles.content}>
-        {users?.length ? (
-          <Flex {...styles.cards}>
-            <Flex {...styles.spaceBlock} />
-            {users?.map((user) => (
-              <Card key={user.id} user={user} {...cardProps} />
-            ))}
-            <Flex {...styles.spaceBlock} />
-          </Flex>
-        ) : (
-          <Text {...styles.emptyMessage}>{messageIfEmpty}</Text>
-        )}
-      </Flex>
+      {users ? (
+        <Flex {...styles.content}>
+          {users?.length ? (
+            <Flex {...styles.cards}>
+              <Flex {...styles.spaceBlock} />
+              {users?.map((user) => (
+                <Card key={user.id} user={user} {...cardProps} />
+              ))}
+              <Flex {...styles.spaceBlock} />
+            </Flex>
+          ) : (
+            <Flex {...styles.emptyList}>
+              <Text>{messageIfEmpty}</Text>
+            </Flex>
+          )}
+        </Flex>
+      ) : (
+        <Spinner color="yellow.200" />
+      )}
     </Flex>
   );
 };
@@ -68,5 +79,15 @@ const styles = {
     overflowX: "auto",
     paddingX: { base: "1em", md: "0" },
   },
-  emptyMessage: {},
+  emptyList: {
+    direction: "row",
+    align: "center",
+    justify: "center",
+    background: "white",
+    width: "100%",
+    height: { base: "9em", md: "11em" },
+    marginX: { base: "1.5em", md: "15vw" },
+    marginTop: { base: "1em", md: "2em" },
+    marginBottom: "2em",
+  },
 };

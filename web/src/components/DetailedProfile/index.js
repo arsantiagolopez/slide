@@ -18,7 +18,6 @@ const DetailedProfile = ({
   user: { id, email, name, picture },
   active,
   setActive,
-  getFirstName,
 }) => {
   return (
     <Modal

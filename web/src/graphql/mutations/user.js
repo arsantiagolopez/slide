@@ -52,4 +52,12 @@ const UpdateProfile = `
   }
  `;
 
-export { Signup, Login, Logout, UpdateProfile };
+const FollowUser = `
+  
+`;
+
+const UnfollowUser = `
+
+`;
+
+export { Signup, Login, Logout, UpdateProfile, FollowUser, UnfollowUser };

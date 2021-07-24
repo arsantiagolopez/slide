@@ -25,18 +25,60 @@ export default {
       return false;
     },
     // Get newest users (last 30)
-    getNewestUsers: async (_, __, { models, req }) => {
+    getNewestUsers: (_, __, { models, req }) => {
       const myId = req.session.userId;
 
       // Return null if not logged in
       if (!myId) return null;
 
-      const newestUsers = await models.User.findAll({
-        limit: 3,
+      return models.User.findAll({
+        limit: 30,
+        order: [["createdAt", "DESC"]],
+      });
+    },
+
+    /**
+     * Get all users that follow ID.
+     * @param {string} id - User ID.
+     * @returns an array of users that follow ID.
+     */
+    getAllFollowersById: async (_, { id }, { models }) => {
+      const user = await models.User.findOne({
+        where: { id },
+        include: {
+          model: models.User,
+          as: "following",
+        },
+        // order: [["createdAt", "DESC"]],
+      });
+
+      if (!user) {
+        return [];
+      }
+
+      return user.following;
+    },
+
+    /**
+     * Get all users that ID is following.
+     * @param {string} id - User ID.
+     * @returns an array of users that ID is following.
+     */
+    getAllFollowingById: async (_, { id }, { models }) => {
+      const user = await models.User.findOne({
+        where: { id },
+        include: {
+          model: models.User,
+          as: "follower",
+        },
         order: [["createdAt", "DESC"]],
       });
 
-      return newestUsers;
+      if (!user) {
+        return [];
+      }
+
+      return user.follower;
     },
   },
   Mutation: {
@@ -74,6 +116,43 @@ export default {
           email: lowercaseEmail,
           password: hashedPassword,
           name,
+        });
+
+        // No one deserves to be alone: Befriend Alex on sign up
+        await models.Follow.create({
+          followerId: user.id,
+          followingId: "1", // Alex's ID
+        });
+
+        // Receive initial messages from your new friend, Alex
+        await models.Message.create({
+          senderId: "1",
+          recipientId: user.id,
+          body: "Howdy 👋🏼",
+        });
+
+        await models.Message.create({
+          senderId: "1",
+          recipientId: user.id,
+          body: "Welcome to Slide. A portfolio, semi-production ready messaging app that displays my skills.",
+        });
+
+        await models.Message.create({
+          senderId: "1",
+          recipientId: user.id,
+          body: "You've probably used Whatsapp, WeChat or even iMessage. You'll find this to be quite similar.",
+        });
+
+        await models.Message.create({
+          senderId: "1",
+          recipientId: user.id,
+          body: "You can add friends from the New Users tab and spark conversations.",
+        });
+
+        await models.Message.create({
+          senderId: "1",
+          recipientId: user.id,
+          body: "P.S. If you're a potential employer. Hire me 😜",
         });
 
         // Update user session & log them in
@@ -124,7 +203,11 @@ export default {
 
       return { user };
     },
-    // Log user out by destroying their session
+
+    /**
+     * Destroy and thus log user out, by destroying their
+     * session/deleting their cookie.
+     */
     logout: (_, __, { req, res }) =>
       new Promise((resolve) => {
         // Destroy session
@@ -138,7 +221,13 @@ export default {
         });
       }),
 
-    // Update user profile
+    /**
+     * Update user's profile
+     * @param {string} email - User email.
+     * @param {string} name - User name.
+     * @param {string} picture - image URL, src compatible.
+     * @returns an user instance with the updated fields.
+     */
     updateProfile: async (
       _,
       { input: { email, name, picture } },
@@ -160,6 +249,72 @@ export default {
       user.update({ email, name, picture });
 
       return { user };
+    },
+
+    /**
+     * Follow user of ID passed
+     * @param {string} id -
+     * @returns true if successfully followed.
+     */
+    followUser: async (_, { id }, { models, req }) => {
+      const myId = req.session.userId;
+
+      if (id === myId) {
+        return handleError("id", "You can't follow yourself.");
+      }
+
+      const isFollowed = await models.Follow.findOne({
+        where: {
+          followerId: myId,
+          followingId: id,
+        },
+      });
+
+      if (isFollowed) {
+        return handleError("id", "User already followed.");
+      }
+
+      // Create relation between users
+      await models.Follow.create({
+        followerId: myId,
+        followingId: id,
+      });
+
+      return {
+        success: true,
+      };
+    },
+
+    /**
+     * Unfollow user of ID passed
+     * @param {string} id -
+     * @returns true if successfully unfollowed.
+     */
+    unfollowUser: async (_, { id }, { models, req }) => {
+      const myId = req.session.userId;
+
+      const isFollowed = await models.Follow.findOne({
+        where: {
+          followerId: myId,
+          followingId: id,
+        },
+      });
+
+      if (!isFollowed) {
+        return handleError("id", "User isn't followed.");
+      }
+
+      // Destroy relation between users
+      await models.Follow.destroy({
+        where: {
+          followerId: myId,
+          followingId: id,
+        },
+      });
+
+      return {
+        success: true,
+      };
     },
   },
 };

@@ -43,6 +43,8 @@ export default `
     me: User
     userRegistered(email: String!): Boolean!
     getNewestUsers: [User]!
+    getAllFollowersById(id: String!): [User]!
+    getAllFollowingById(id: String!): [User]!
   }
 
   type Mutation {
@@ -50,5 +52,7 @@ export default `
     login(input: LoginInput!): AuthResponse!
     logout: Boolean!
     updateProfile(input: UpdateProfileInput!): AuthResponse!
+    followUser(id: String!): GeneralBooleanResponse!
+    unfollowUser(id: String!): GeneralBooleanResponse!
   }
 `;

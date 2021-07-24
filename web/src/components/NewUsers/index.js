@@ -5,138 +5,10 @@ import {
   IoChevronForwardSharp,
   IoPeopleSharp,
 } from "react-icons/io5";
+import { DetailedProfile } from "../DetailedProfile";
 
-const NewUsers = ({ height }) => {
+const NewUsers = ({ users, height, active, setActive }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
-
-  const users = [
-    {
-      id: "1",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "2",
-      email: "pearson@pearson.com",
-      name: "Andrea",
-      picture:
-        "https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8ZmFjZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: "3",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "4",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "5",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "6",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "7",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "8",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "9",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "10",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "11",
-      email: "pearson@pearson.com",
-      name: "Andrea",
-      picture:
-        "https://images.unsplash.com/photo-1554151228-14d9def656e4?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8ZmFjZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
-    },
-    {
-      id: "12",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "13",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "14",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "15",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "16",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "17",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-    {
-      id: "18",
-      email: "pearson@pearson.com",
-      name: "Jack Pearson",
-      picture:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=668&q=80",
-    },
-  ];
 
   return (
     <Flex
@@ -164,20 +36,28 @@ const NewUsers = ({ height }) => {
       </Flex>
 
       <Flex {...styles.content}>
-        {users.map(({ id, email, name, picture }) => {
+        {users?.map((user) => {
+          const detailedProfileProps = {
+            user,
+            active,
+            setActive,
+          };
+
           return (
             <Flex
-              key={id}
+              key={user.id}
               paddingX={{ base: "0.5em", md: isCollapsed ? "22%" : "2em" }}
+              onClick={() => setActive(user.id)}
               {...styles.card}
             >
-              <Avatar src={picture} />
+              <Avatar src={user.picture} />
               {!isCollapsed && (
                 <Flex {...styles.meta}>
-                  <Text {...styles.name}>{name}</Text>
-                  <Text {...styles.email}>{email}</Text>
+                  <Text {...styles.name}>{user.name}</Text>
+                  <Text {...styles.email}>{user.email}</Text>
                 </Flex>
               )}
+              <DetailedProfile {...detailedProfileProps} />
             </Flex>
           );
         })}

@@ -10,6 +10,8 @@ const MessageContext = createContext({
   recipientId: null,
   loadedConversations: null,
   activeTimestamp: null,
+  query: null,
+  setQuery: () => {},
   setActiveTimestamp: () => {},
   setLoadedConversations: () => {},
   setRecipientId: () => {},
