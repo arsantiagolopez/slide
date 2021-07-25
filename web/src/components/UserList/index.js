@@ -10,8 +10,16 @@ const UserList = ({
   title,
   type,
   messageIfEmpty,
+  friends,
+  setFriends,
 }) => {
-  const cardProps = { active, setActive, type };
+  const cardProps = {
+    active,
+    setActive,
+    type,
+    friends,
+    setFriends,
+  };
 
   return (
     <Flex {...styles.wrapper}>
@@ -37,7 +45,7 @@ const UserList = ({
           )}
         </Flex>
       ) : (
-        <Spinner color="yellow.200" />
+        <Spinner {...styles.spinner} />
       )}
     </Flex>
   );
@@ -89,5 +97,9 @@ const styles = {
     marginX: { base: "1.5em", md: "15vw" },
     marginTop: { base: "1em", md: "2em" },
     marginBottom: "2em",
+  },
+  spinner: {
+    alignSelf: "center",
+    color: "yellow.200",
   },
 };

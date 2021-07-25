@@ -85,13 +85,19 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
         .query(GetAllFollowingByIdQuery, { id: user?.me?.id })
         .toPromise();
 
-      setFriends(getAllFollowingById);
+      // Add isFriend prop
+      const withRelations = getAllFollowingById?.map((friend) => ({
+        isFriend: true,
+        ...friend,
+      }));
+
+      setFriends(withRelations);
     }
   }, [user]);
 
   // Fetch new users
   useEffect(async () => {
-    if (!newUsers && user?.me) {
+    if (!newUsers && user?.me && friends) {
       const {
         data: { getNewestUsers },
       } = await client.query(GetNewestUsersQuery).toPromise();
@@ -101,17 +107,48 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
         (item) => item.id !== user?.me?.id
       );
 
-      setNewUsers(otherUsers);
+      // Turn friends to map for fastest search
+      const friendsMap = new Map(friends?.map((item) => [item.id, item]));
+
+      // Update newUsers
+      const withRelations = otherUsers?.map((user) => {
+        const isFriend = friendsMap.get(user.id);
+        if (isFriend) {
+          return { isFriend: true, ...user };
+        }
+        return { isFriend: false, ...user };
+      });
+
+      setNewUsers(withRelations);
     }
-  }, [user]);
+  }, [user, friends]);
 
-  // Update lists anytime a relationship changes
+  // Update new users on new friend interactions
   useEffect(() => {
-    // if (friends && ) {
-    // }
-  }, [friends, conversations, newUsers]);
+    if (newUsers && friends) {
+      // Turn friends to map for fastest search
+      const friendsMap = new Map(friends?.map((item) => [item.id, item]));
 
-  const listProps = { active, setActive };
+      // Update newUsers
+      const withRelations = newUsers?.map((user) => {
+        const isFriend = friendsMap.get(user.id);
+
+        if (isFriend) {
+          return { ...user, isFriend: true };
+        }
+        return { ...user, isFriend: false };
+      });
+
+      setNewUsers(withRelations);
+    }
+  }, [friends]);
+
+  const listProps = {
+    active,
+    setActive,
+    friends,
+    setFriends,
+  };
 
   return (
     <Flex {...styles.wrapper}>
@@ -126,7 +163,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
         <UserList
           users={friends}
           title="My friends"
-          messageIfEmpty="Life's better with friends. You my friend, have none."
+          messageIfEmpty="Life's better with friends. You my friend, have none. Add one from the side bar!"
           {...listProps}
         />
       </Flex>

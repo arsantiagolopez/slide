@@ -11,14 +11,84 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import { FaUserCheck } from "react-icons/fa";
+import { FaUserPlus, FaUserTimes } from "react-icons/fa";
 import { SiMinutemailer } from "react-icons/si";
+import { useMutation } from "urql";
+import {
+  FollowUser as FollowUserMutation,
+  UnfollowUser as UnfollowUserMutation,
+} from "../../graphql/mutations/user";
+import { showToast } from "../../utils/showToast";
 
-const DetailedProfile = ({
-  user: { id, email, name, picture },
-  active,
-  setActive,
-}) => {
+const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
+  const { id, email, name, picture, isFriend } = user;
+  const [, followUserMutation] = useMutation(FollowUserMutation);
+  const [, unfollowUserMutation] = useMutation(UnfollowUserMutation);
+
+  /**
+   * Show toast based on error or success response.
+   * @param {object} data - follow/unfollow mutation response.
+   * @param {boolean} isFriend - true if isFriend, false if not.
+   * @returns true if successful, false if any error thrown.
+   */
+  const handleResponse = (data, isFriend) => {
+    const secondLevel = isFriend ? "unfollowUser" : "followUser";
+    const errors = data?.[secondLevel]?.errors;
+    const successMessage = isFriend
+      ? `${name} is no longer your friend.`
+      : `${name} is now your friend!`;
+
+    // Errors all show red toasts
+    if (errors) {
+      const errorMessage = errors[0]?.message;
+      showToast({
+        status: "error",
+        title: errorMessage,
+      });
+
+      return false;
+    }
+
+    // Show red toast on unfriend, green on befriend
+    showToast({
+      status: isFriend ? "error" : "success",
+      title: successMessage,
+    });
+
+    return true;
+  };
+
+  // Add or Remove friend
+  const handleFriendAction = async () => {
+    // Follow if they aren't friends
+    if (!isFriend) {
+      const { data } = await followUserMutation({ id });
+      const success = handleResponse(data, isFriend);
+
+      if (!success) return;
+
+      // Add friend
+      const updatedFriends = [...friends, { ...user, isFriend: true }];
+
+      setFriends(updatedFriends);
+    }
+    // Unfollow if they are
+    else {
+      const { data } = await unfollowUserMutation({ id });
+      const success = handleResponse(data, isFriend);
+
+      if (!success) return;
+
+      // Remove friend
+      const updatedFriends = friends?.filter((friend) => friend.id !== id);
+
+      setFriends(updatedFriends);
+
+      // Close modal
+      setActive(null);
+    }
+  };
+
   return (
     <Modal
       isCentered
@@ -38,15 +108,28 @@ const DetailedProfile = ({
 
             {/* Action control */}
             <Flex {...styles.actions}>
-              {
-                // TODO: isFollowing ? show +user : show -user
-              }
-              <IconButton
-                aria-label="Add/remove friend"
-                icon={<FaUserCheck />}
-                {...styles.button}
-                {...styles.interactButton}
-              />
+              {isFriend ? (
+                <IconButton
+                  onClick={handleFriendAction}
+                  aria-label={`Unfriend ${name}`}
+                  icon={<FaUserTimes />}
+                  _hover={{ bg: "red.400" }}
+                  _active={{ bg: "red.500" }}
+                  {...styles.button}
+                  {...styles.interactButton}
+                />
+              ) : (
+                <IconButton
+                  onClick={handleFriendAction}
+                  aria-label="Add friend"
+                  icon={<FaUserPlus />}
+                  _hover={{ bg: "green.500" }}
+                  _active={{ bg: "green.200" }}
+                  {...styles.button}
+                  {...styles.interactButton}
+                />
+              )}
+
               <Button
                 leftIcon={<SiMinutemailer />}
                 {...styles.button}

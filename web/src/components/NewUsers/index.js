@@ -7,7 +7,14 @@ import {
 } from "react-icons/io5";
 import { DetailedProfile } from "../DetailedProfile";
 
-const NewUsers = ({ users, height, active, setActive }) => {
+const NewUsers = ({
+  users,
+  height,
+  active,
+  setActive,
+  friends,
+  setFriends,
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
@@ -41,6 +48,8 @@ const NewUsers = ({ users, height, active, setActive }) => {
             user,
             active,
             setActive,
+            friends,
+            setFriends,
           };
 
           return (

@@ -3,12 +3,10 @@ import { useRouter } from "next/router";
 import React from "react";
 import { DetailedProfile } from "../DetailedProfile";
 
-const Card = ({ user, active, setActive, type }) => {
+const Card = ({ user, active, setActive, type, friends, setFriends }) => {
   const { id, name, picture } = user;
 
   const getFirstName = (name) => name.split(" ")[0];
-
-  const detailedProfileProps = { user, active, setActive };
 
   const router = useRouter();
 
@@ -22,6 +20,14 @@ const Card = ({ user, active, setActive, type }) => {
       });
     }
     return setActive(id);
+  };
+
+  const detailedProfileProps = {
+    user,
+    active,
+    setActive,
+    friends,
+    setFriends,
   };
 
   return (

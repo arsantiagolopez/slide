@@ -53,11 +53,27 @@ const UpdateProfile = `
  `;
 
 const FollowUser = `
-  
+  mutation FollowUser($id: String!) {
+    followUser(id: $id) {
+    errors {
+      field
+      message
+    }
+    success
+    }
+  }
 `;
 
 const UnfollowUser = `
-
+  mutation UnfollowUser($id: String!) {
+    unfollowUser(id: $id) {
+    errors {
+      field
+      message
+    }
+    success
+    }
+  }
 `;
 
 export { Signup, Login, Logout, UpdateProfile, FollowUser, UnfollowUser };

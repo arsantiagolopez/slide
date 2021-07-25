@@ -62,7 +62,7 @@ export { Navigation };
 
 const styles = {
   wrapper: {
-    zIndex: 0,
+    zIndex: 1,
     direction: "row",
     justify: "center",
     align: "center",
