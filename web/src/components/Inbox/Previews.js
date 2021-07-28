@@ -70,16 +70,25 @@ const Previews = () => {
         a.newestMessage.timestamp < b.newestMessage.timestamp ? 1 : -1
       );
 
-      // Query check:
-      // If query ID doesn't have a preview, create and move to top
-      const hasPreview = previews.some(
-        ({ recipientInfo: { userId } }) => userId === query
-      );
+      // Run this query check if query parameter present in URL
+      if (query) {
+        const hasPreview = previews.find(
+          ({ recipientInfo: { userId } }) => userId === query
+        );
 
-      if (query && !hasPreview) {
-        const tempPreview = await createTempPreview(query);
-        previews.unshift(tempPreview);
-        setActiveMessage(tempPreview);
+        // If query ID doesn't have a preview, create and move to top
+        if (!hasPreview) {
+          const tempPreview = await createTempPreview(query);
+          previews.unshift(tempPreview);
+          setActiveMessage(tempPreview);
+        }
+        // If it does, move preview to top
+        else {
+          const previewsWithoutUser = previews.filter(
+            ({ recipientInfo: { userId } }) => userId !== query
+          );
+          previews = [hasPreview, ...previewsWithoutUser];
+        }
       }
 
       // Update previews
