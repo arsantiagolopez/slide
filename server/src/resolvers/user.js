@@ -80,6 +80,21 @@ export default {
 
       return user.follower;
     },
+
+    /**
+     * Get user profile associated with that ID.
+     * @param {string} id - User ID.
+     * @returns user profile is exists, null if it doesn't
+     */
+    getUserProfileById: async (_, { id }, { models }) => {
+      const user = await models.User.findOne({ where: { id } });
+
+      if (!user) {
+        return handleError("id", "User with that ID doesn't exist.");
+      }
+
+      return user;
+    },
   },
   Mutation: {
     // Sign user up locally, log them in & return their profile

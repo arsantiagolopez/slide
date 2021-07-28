@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import now from "performance-now";
 import React, { useEffect, useState } from "react";
 import { useClient, useMutation, useSubscription } from "urql";
@@ -28,8 +27,6 @@ const MessageProvider = ({ children, myId }) => {
   const [query, setQuery] = useState(null);
 
   const [, updateSeenStatus] = useMutation(UpdateSeenStatusMutation);
-
-  const router = useRouter();
 
   // Number of full conversation histories to fetch on mount
   const NUM_OF_RECENT_CONVERSATIONS = 3;
@@ -132,7 +129,7 @@ const MessageProvider = ({ children, myId }) => {
     // Update active timestamp
     const lastItem = conversation.length - 1;
     const newestMessage = conversation[lastItem];
-    setActiveTimestamp(newestMessage.id);
+    setActiveTimestamp(newestMessage?.id);
 
     // Set conversation to seen
     setToSeen(conversation);
@@ -142,7 +139,7 @@ const MessageProvider = ({ children, myId }) => {
   const setToSeen = (conversation) => {
     const lastItem = conversation.length - 1;
     const newestMessage = conversation[lastItem];
-    const { senderId, recipientId } = newestMessage;
+    const { senderId, recipientId } = newestMessage || {};
     const userId = myId === senderId ? recipientId : senderId;
 
     // Only run if any message sent by user in conversation is unseen
@@ -222,7 +219,11 @@ const MessageProvider = ({ children, myId }) => {
   // Toggle seen & fetch conversation if not cached
   useEffect(async () => {
     if (activeMessage) {
-      const { recipientInfo } = activeMessage;
+      const { recipientInfo, newestMessage } = activeMessage;
+
+      // If active message is temp preview, skip loading conversations
+      const isTempPreview = !newestMessage.senderId === true;
+      if (isTempPreview) return;
 
       const conversationLoaded = loadedConversations.find(
         (conversation) => conversation.recipientId === recipientInfo.userId
@@ -296,7 +297,6 @@ const MessageProvider = ({ children, myId }) => {
       // Set newMessage to the message object if there is one,
       // Set to null if message already has preview
 
-      console.log("liveMessagese", liveMessages);
       // First element is always the newest
       const incomingMessage = liveMessages[0];
       const { senderId, recipientId } = incomingMessage;
@@ -436,17 +436,18 @@ const MessageProvider = ({ children, myId }) => {
 
   // Links that redirect to /messages come with a query.user
   // parameter containing the userId of the person who's
-  // message should be active. Set to active message
+  // message should be active.
+
+  // Find user preview, move to top and set as activeMessage
   useEffect(async () => {
     if (query && previews) {
-      // Find user object in previews array
-      const message = previews?.find(
+      const preview = previews?.find(
         ({ recipientInfo: { userId } }) => userId === query
       );
 
-      setActiveMessage(message);
+      if (preview) setActiveMessage(preview);
     }
-  }, [query, previews]);
+  }, [query, previewsCopy]);
 
   return (
     <MessageContext.Provider

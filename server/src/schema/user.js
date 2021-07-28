@@ -45,6 +45,7 @@ export default `
     getNewestUsers: [User]!
     getAllFollowersById(id: String!): [User]!
     getAllFollowingById(id: String!): [User]!
+    getUserProfileById(id: String!): User
   }
 
   type Mutation {

@@ -83,10 +83,8 @@ const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
   // Custom mobile slideIn & out animation
   const handleBoardDisplay = async () => {
     setIsBoardOpen(false);
-
     // Wait for screen to slide out, then set display to none
     await useDelay(100);
-
     // 100 miliseconds is congruent with boardContent transition duration
     setActiveMessage(null);
   };
@@ -245,6 +243,7 @@ const styles = {
   name: {
     fontSize: { base: "26pt", md: "min(42pt, 3.5em)" },
     noOfLines: 1,
+    paddingRight: "2",
   },
   picture: {
     borderRadius: "full",

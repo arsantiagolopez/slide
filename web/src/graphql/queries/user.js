@@ -16,7 +16,7 @@ const UserRegistered = `
 `;
 
 const GetNewestUsers = `
-  query getNewestUsers {
+  query GetNewestUsers {
     getNewestUsers {
       id
       email
@@ -27,7 +27,7 @@ const GetNewestUsers = `
 `;
 
 const GetAllFollowersById = `
-  query getAllFollowersById($id: String!) {
+  query GetAllFollowersById($id: String!) {
     getAllFollowersById(id: $id) {
       id
       email
@@ -38,8 +38,19 @@ const GetAllFollowersById = `
 `;
 
 const GetAllFollowingById = `
-  query getAllFollowingById($id: String!) {
+  query GetAllFollowingById($id: String!) {
     getAllFollowingById(id: $id) {
+      id
+      email
+      name
+      picture
+    }
+  }
+`;
+
+const GetUserProfileById = `
+  query GetUserProfileById($id: String!) {
+    getUserProfileById(id: $id) {
       id
       email
       name
@@ -54,4 +65,5 @@ export {
   GetNewestUsers,
   GetAllFollowersById,
   GetAllFollowingById,
+  GetUserProfileById,
 };

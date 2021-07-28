@@ -49,7 +49,7 @@ const mySession = session({
   name: COOKIE_NAME,
   secret: SESSION_SECRET,
   resave: false,
-  // Only save data when needed
+  // Only save session key on auth
   saveUninitialized: false,
   store: new RedisStore({ client: redisClient }),
   cookie: {

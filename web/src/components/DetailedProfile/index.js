@@ -10,6 +10,7 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import { FaUserPlus, FaUserTimes } from "react-icons/fa";
 import { SiMinutemailer } from "react-icons/si";
@@ -24,6 +25,8 @@ const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
   const { id, email, name, picture, isFriend } = user;
   const [, followUserMutation] = useMutation(FollowUserMutation);
   const [, unfollowUserMutation] = useMutation(UnfollowUserMutation);
+
+  const router = useRouter();
 
   /**
    * Show toast based on error or success response.
@@ -89,6 +92,13 @@ const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
     }
   };
 
+  // Navigate to message panel with user clicked
+  const handleSendMessage = () =>
+    router.push({
+      pathname: "/messages",
+      query: { user: id },
+    });
+
   return (
     <Modal
       isCentered
@@ -131,6 +141,7 @@ const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
               )}
 
               <Button
+                onClick={handleSendMessage}
                 leftIcon={<SiMinutemailer />}
                 {...styles.button}
                 {...styles.messageButton}

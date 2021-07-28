@@ -1,6 +1,8 @@
 import { Button, Flex, Image, Text } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
+import { useClient } from "urql";
 import { MessageContext } from "../../context/MessageContext";
+import { GetUserProfileById as GetUserProfileByIdQuery } from "../../graphql/queries/user";
 import { formatTimestamp } from "../../utils/formatTimestamp";
 import { Draggable } from "../Draggable";
 import { SwipeToDelete } from "../SwipeToDelete";
@@ -18,10 +20,33 @@ const Previews = () => {
     previews,
     setPreviews,
     setPreviewsCopy,
+    query,
   } = useContext(MessageContext);
 
+  const client = useClient();
+
+  const createTempPreview = async (id) => {
+    // Get profile data
+    const {
+      data: { getUserProfileById },
+    } = await client.query(GetUserProfileByIdQuery, { id }).toPromise();
+
+    return {
+      recipientInfo: {
+        userId: getUserProfileById.id,
+        name: getUserProfileById.name,
+        picture: getUserProfileById.picture,
+      },
+      newestMessage: {
+        body: "",
+        timestamp: new Date(),
+        seen: true,
+      },
+    };
+  };
+
   // Create & update lighter previews object with only newest message
-  useEffect(() => {
+  useEffect(async () => {
     if (messageList) {
       let previews = messageList.map(({ conversation, ...otherUserProps }) => {
         const lastItem = conversation.length - 1;
@@ -45,13 +70,25 @@ const Previews = () => {
         a.newestMessage.timestamp < b.newestMessage.timestamp ? 1 : -1
       );
 
+      // Query check:
+      // If query ID doesn't have a preview, create and move to top
+      const hasPreview = previews.some(
+        ({ recipientInfo: { userId } }) => userId === query
+      );
+
+      if (query && !hasPreview) {
+        const tempPreview = await createTempPreview(query);
+        previews.unshift(tempPreview);
+        setActiveMessage(tempPreview);
+      }
+
       // Update previews
       setPreviews(previews);
 
       // Update previews copy (for search functionality)
       setPreviewsCopy(previews);
     }
-  }, [messageList]);
+  }, [messageList, query]);
 
   const swipeToDeleteDndContextProps = { setActiveDelete, setActiveTransform };
 

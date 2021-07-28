@@ -104,6 +104,6 @@ const styles = {
     right: "0.5em",
     boxSize: "3",
     borderRadius: "full",
-    bg: "red.400",
+    bg: "green.400",
   },
 };

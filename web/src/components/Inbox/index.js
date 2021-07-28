@@ -12,7 +12,7 @@ const Inbox = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const { height } = useDimensions();
-  const { activeMessage, setQuery } = useContext(MessageContext);
+  const { activeMessage, previews, setQuery } = useContext(MessageContext);
 
   const { query } = useRouter();
 
@@ -21,10 +21,10 @@ const Inbox = () => {
 
   // Set active user based on router query
   useEffect(() => {
-    if (query) {
+    if (query?.user && previews) {
       setQuery(query.user);
     }
-  }, [query]);
+  }, [query, previews]);
 
   const searchProps = { searchValue, setSearchValue };
 
