@@ -108,6 +108,7 @@ const styles = {
     isTruncated: true,
     fontSize: { base: "1.25em", md: "1.5em" },
     paddingY: "0.5rem",
+    paddingRight: "1",
     borderBottom: "3px solid black",
   },
   newMessageNotification: {
