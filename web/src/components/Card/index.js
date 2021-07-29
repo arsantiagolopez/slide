@@ -6,6 +6,8 @@ import { DetailedProfile } from "../DetailedProfile";
 const Card = ({ user, active, setActive, type, friends, setFriends }) => {
   const { id, name, picture } = user;
 
+  const isPictureGradient = picture.includes("linear-gradient");
+
   const getFirstName = (name) => name.split(" ")[0];
 
   const router = useRouter();
@@ -36,7 +38,11 @@ const Card = ({ user, active, setActive, type, friends, setFriends }) => {
       transform={active === id && "scale(1.1)"}
       {...styles.cardWrapper}
     >
-      <Avatar src={picture} {...styles.avatar} />
+      {isPictureGradient ? (
+        <Flex background={picture} {...styles.avatar} />
+      ) : (
+        <Avatar src={picture} {...styles.avatar} />
+      )}
 
       <Flex {...styles.nameContainer}>
         <Heading {...styles.name}>{getFirstName(name)}</Heading>
@@ -86,7 +92,13 @@ const styles = {
     },
   },
   avatar: {
+    boxShadow:
+      "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    borderRadius: "50%",
+    objectFit: "cover",
     boxSize: { base: "4em", md: "5em" },
+    width: { base: "5em", md: "6em" },
+    height: { base: "5em", md: "6em" },
   },
   nameContainer: {
     maxWidth: { base: "5em", md: "6em" },
