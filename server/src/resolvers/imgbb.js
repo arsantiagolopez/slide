@@ -34,6 +34,8 @@ export default {
         const dirEnd = `../../public/${v4()}`;
         const dir = path.join(__dirname, dirEnd);
 
+        console.log("dir: ", dir);
+
         console.log("checkpoint 2");
 
         // Write file to dir & return file stream
