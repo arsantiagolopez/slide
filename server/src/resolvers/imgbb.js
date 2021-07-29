@@ -13,7 +13,7 @@ const IMGBB_API_KEY = Config.imgbb.apiKey;
 export default {
   Mutation: {
     // Upload your profile picture
-    uploadImage: async (_, { picture }, { models, req }) => {
+    uploadImage: async (_, { picture }, { req }) => {
       try {
         const myId = req.session.userId;
 
@@ -30,6 +30,8 @@ export default {
         const { createReadStream: fileReadStream } = await picture.promise;
         const stream = fileReadStream();
 
+        console.log("STREAM: ", stream);
+
         // Create temp file to store in directory
         const dirEnd = `../../public/${v4()}`;
         const dir = path.join(__dirname, dirEnd);
@@ -41,11 +43,11 @@ export default {
           stream
             .pipe(createWriteStream(dir))
             .on("finish", () => {
-              console.log("finished: ", createReadStream(dir));
+              console.log("* Finished: ", createReadStream(dir));
               resolve(createReadStream(dir));
             })
             .on("error", (err) => {
-              console.log("errored: ", err);
+              console.log("* Errored: ", err);
               reject();
             })
         );
