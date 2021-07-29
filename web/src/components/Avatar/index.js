@@ -10,11 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { useMutation } from "urql";
 import { Editable } from "../../components/Editable";
-import { UserContext } from "../../context/UserContext";
 import {
   Logout as LogoutMutation,
   UpdateProfile as UpdateProfileMutation,
@@ -25,8 +24,6 @@ import { UpdateAvatar } from "../UpdateAvatar";
 
 const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
-
-  const { avatar } = useContext(UserContext);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -75,13 +72,15 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
   const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
   const updateAvatarProps = { setAvatarSrc };
 
+  const isPictureGradient = user?.me?.picture?.includes("linear-gradient");
+
   return (
     <>
       <Flex onClick={onOpen} ref={buttonRef}>
-        {avatarSrc ? (
-          <Image src={avatarSrc} {...styles.avatar} />
+        {isPictureGradient ? (
+          <Flex background={avatarSrc} {...styles.avatar} />
         ) : (
-          <Flex background={avatar} {...styles.avatar} />
+          <Image src={avatarSrc} {...styles.avatar} />
         )}
       </Flex>
 
@@ -105,14 +104,10 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
 
             <UpdateAvatar {...updateAvatarProps}>
               <Flex>
-                {avatarSrc ? (
-                  <Image
-                    src={avatarSrc}
-                    background={!avatarSrc && avatar}
-                    {...styles.picture}
-                  />
+                {isPictureGradient ? (
+                  <Flex background={avatarSrc} {...styles.picture} />
                 ) : (
-                  <Flex background={avatar} {...styles.picture} />
+                  <Image src={avatarSrc} {...styles.picture} />
                 )}
               </Flex>
             </UpdateAvatar>

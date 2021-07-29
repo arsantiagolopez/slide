@@ -114,6 +114,8 @@ const Previews = () => {
             newestMessage: { body, timestamp, seen },
           } = item;
 
+          const isPictureGradient = recipientImg.includes("linear-gradient");
+
           const formattedTimestamp = formatTimestamp(timestamp, "fromNow");
 
           const swipeToDeleteProps = {
@@ -154,18 +156,33 @@ const Previews = () => {
                 >
                   {/* Contact image */}
                   <Flex {...styles.imageContainer}>
-                    <Image
-                      src={recipientImg}
-                      boxShadow={
-                        seen
-                          ? "none"
-                          : {
-                              base: "0 0 0 3px #48BB78",
-                              md: "0 0 0 2px #48BB78",
-                            }
-                      }
-                      {...styles.image}
-                    />
+                    {isPictureGradient ? (
+                      <Flex
+                        background={recipientImg}
+                        boxShadow={
+                          seen
+                            ? "none"
+                            : {
+                                base: "0 0 0 3px #48BB78",
+                                md: "0 0 0 2px #48BB78",
+                              }
+                        }
+                        {...styles.image}
+                      />
+                    ) : (
+                      <Image
+                        src={recipientImg}
+                        boxShadow={
+                          seen
+                            ? "none"
+                            : {
+                                base: "0 0 0 3px #48BB78",
+                                md: "0 0 0 2px #48BB78",
+                              }
+                        }
+                        {...styles.image}
+                      />
+                    )}
                   </Flex>
 
                   {/* Contact metadata */}

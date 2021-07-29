@@ -26,6 +26,8 @@ const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
   const [, followUserMutation] = useMutation(FollowUserMutation);
   const [, unfollowUserMutation] = useMutation(UnfollowUserMutation);
 
+  const isPictureGradient = picture.includes("linear-gradient");
+
   const router = useRouter();
 
   /**
@@ -107,7 +109,10 @@ const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
       {...styles.wrapper}
     >
       <ModalOverlay />
-      <ModalContent {...styles.content} backgroundImage={`url(${picture})`}>
+      <ModalContent
+        {...styles.content}
+        backgroundImage={isPictureGradient ? picture : `url(${picture})`}
+      >
         <ModalCloseButton {...styles.closeButton} />
 
         <ModalBody {...styles.body}>

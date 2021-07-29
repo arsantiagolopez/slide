@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import Config from "../config";
+import { generateGradientAvatar } from "../utils/generateGradientAvatar";
 import { handleError } from "../utils/handleError";
 
 // Constants
@@ -126,11 +127,15 @@ export default {
         // Hash password with argon2
         const hashedPassword = await argon2.hash(password);
 
+        // create random temporary gradient avatar
+        const picture = generateGradientAvatar();
+
         // Create user
         const user = await models.User.create({
           email: lowercaseEmail,
           password: hashedPassword,
           name,
+          picture,
         });
 
         // No one deserves to be alone: Befriend Alex on sign up

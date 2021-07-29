@@ -1,4 +1,4 @@
-import { Avatar, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Flex, Heading, Icon, Image, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import {
   IoChevronBackSharp,
@@ -52,6 +52,8 @@ const NewUsers = ({
             setFriends,
           };
 
+          const isPictureGradient = user.picture.includes("linear-gradient");
+
           return (
             <Flex
               key={user.id}
@@ -59,7 +61,13 @@ const NewUsers = ({
               onClick={() => setActive(user.id)}
               {...styles.card}
             >
-              <Avatar src={user.picture} />
+              {isPictureGradient ? (
+                <Flex background={user.picture} {...styles.avatar} />
+              ) : (
+                <Image src={user.picture} {...styles.avatar} />
+                // <Avatar src={user.picture} />
+              )}
+
               {!isCollapsed && (
                 <Flex {...styles.meta}>
                   <Text {...styles.name}>{user.name}</Text>
@@ -123,6 +131,13 @@ const styles = {
     _hover: {
       background: "gray.700",
     },
+  },
+  avatar: {
+    boxShadow:
+      "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    borderRadius: "50%",
+    objectFit: "cover",
+    boxSize: "3em",
   },
   meta: {
     direction: "column",
