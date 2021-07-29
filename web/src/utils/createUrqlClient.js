@@ -45,26 +45,16 @@ const createUrqlClient = (ssrExchange) => ({
             cache.invalidate("Query", "me");
           },
           login: (result, _, cache) => {
-            const { login } = result;
-
             // Log user in
             cache.invalidate("Query", "me");
-
-            // Update profile picture query
-            cache.invalidate("Query", "myProfilePicture");
-
-            // Update my own profile information
-            cache.invalidate("Query", "myProfile");
           },
           logout: (_, __, cache) => {
             // Log user out
             cache.updateQuery({ query: MeQuery }, () => ({ me: null }));
-
-            // Update profile picture query
-            cache.invalidate("Query", "myProfilePicture");
-
-            // Update my own profile information
-            cache.invalidate("Query", "myProfile");
+          },
+          updateProfile: (result, _, cache) => {
+            // Revalidate profile info
+            cache.invalidate("Query", "me");
           },
         },
       },

@@ -29,6 +29,8 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
 
   const [, updateProfileMutation] = useMutation(UpdateProfileMutation);
 
+  const isPictureGradient = avatarSrc?.includes("linear-gradient");
+
   const buttonRef = useRef(null);
   const firstField = useRef(null);
 
@@ -71,8 +73,6 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
 
   const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
   const updateAvatarProps = { setAvatarSrc };
-
-  const isPictureGradient = user?.me?.picture?.includes("linear-gradient");
 
   return (
     <>
