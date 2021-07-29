@@ -20,9 +20,12 @@ const UpdateAvatar = ({ children, setAvatarSrc }) => {
         setAvatarSrc(file.preview);
 
         // Upload image to ImgBB
-        const {
-          data: { uploadImage },
-        } = await uploadImageMutation({ picture: file });
+        // const {
+        //   data: { uploadImage },
+        // } = await uploadImageMutation({ picture: file });
+        const uploadImage = await uploadImageMutation({ picture: file });
+
+        console.log(uploadImage);
 
         const picture = uploadImage?.picture;
 

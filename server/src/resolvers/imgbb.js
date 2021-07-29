@@ -25,12 +25,16 @@ export default {
           );
         }
 
+        console.log("checkpoint 1");
+
         const { createReadStream: fileReadStream } = await picture.promise;
         const stream = fileReadStream();
 
         // Create temp file to store in directory
         const dirEnd = `../../public/${v4()}`;
         const dir = path.join(__dirname, dirEnd);
+
+        console.log("checkpoint 2");
 
         // Write file to dir & return file stream
         const formReadyStream = await new Promise((resolve, reject) =>
@@ -44,6 +48,8 @@ export default {
         const form = new FormData();
         form.append("key", IMGBB_API_KEY);
         form.append("image", formReadyStream);
+
+        console.log("checkpoint 3");
 
         // Upload an image to ImgBB
         // More info: https://api.imgbb.com/
@@ -59,6 +65,8 @@ export default {
           responseType: "json",
         });
 
+        console.log("checkpoint 4");
+
         // Delete file from dir after stream read & imgbb post
         if (formReadyStream) {
           unlink(dir, (err, res) => {
@@ -66,6 +74,8 @@ export default {
             return res;
           });
         }
+
+        console.log("checkpoint 5");
 
         if (!success) {
           return handleError("imgbb", "Could not upload image to ImgBB.");
