@@ -1,10 +1,10 @@
-// import axios from "axios";
 import FormData from "form-data";
 import { createReadStream, createWriteStream, unlink } from "fs";
 import got from "got";
 import path from "path";
 import { v4 } from "uuid";
 import Config from "../config";
+import { createFolderIfNotExists } from "../utils/fsFunctions";
 import { handleError } from "../utils/handleError";
 
 const IMGBB_API_URL = Config.imgbb.apiUrl;
@@ -25,18 +25,16 @@ export default {
           );
         }
 
-        console.log("checkpoint 1");
-
         const { createReadStream: fileReadStream } = await picture.promise;
         const stream = fileReadStream();
 
-        console.log("STREAM: ", stream);
+        // Create "/public" folder if it doesn't exist
+        const publicPath = path.join(__dirname, "../../public");
+        createFolderIfNotExists(publicPath);
 
         // Create temp file to store in directory
         const dirEnd = `../../public/${v4()}`;
         const dir = path.join(__dirname, dirEnd);
-
-        console.log("checkpoint 2");
 
         // Write file to dir & return file stream
         const formReadyStream = await new Promise((resolve, reject) =>
@@ -57,8 +55,6 @@ export default {
         form.append("key", IMGBB_API_KEY);
         form.append("image", formReadyStream);
 
-        console.log("checkpoint 3");
-
         // Upload an image to ImgBB
         // More info: https://api.imgbb.com/
         // Example call: https://api.imgbb.com/1/upload?expiration=600&key=YOUR_CLIENT_API_KEY
@@ -73,8 +69,6 @@ export default {
           responseType: "json",
         });
 
-        console.log("checkpoint 4");
-
         // Delete file from dir after stream read & imgbb post
         if (formReadyStream) {
           unlink(dir, (err, res) => {
@@ -82,8 +76,6 @@ export default {
             return res;
           });
         }
-
-        console.log("checkpoint 5");
 
         if (!success) {
           return handleError("imgbb", "Could not upload image to ImgBB.");

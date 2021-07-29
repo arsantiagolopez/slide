@@ -20,12 +20,9 @@ const UpdateAvatar = ({ children, setAvatarSrc }) => {
         setAvatarSrc(file.preview);
 
         // Upload image to ImgBB
-        // const {
-        //   data: { uploadImage },
-        // } = await uploadImageMutation({ picture: file });
-        const uploadImage = await uploadImageMutation({ picture: file });
-
-        console.log(uploadImage);
+        const {
+          data: { uploadImage },
+        } = await uploadImageMutation({ picture: file });
 
         const picture = uploadImage?.picture;
 
@@ -40,8 +37,6 @@ const UpdateAvatar = ({ children, setAvatarSrc }) => {
         const {
           data: { updateProfile },
         } = await updateProfileMutation({ input: { picture } });
-
-        console.log(updateProfile);
 
         // Avatar successfully updated
         if (updateProfile.user) {
