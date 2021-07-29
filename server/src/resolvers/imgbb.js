@@ -34,16 +34,20 @@ export default {
         const dirEnd = `../../public/${v4()}`;
         const dir = path.join(__dirname, dirEnd);
 
-        console.log("dir: ", dir);
-
         console.log("checkpoint 2");
 
         // Write file to dir & return file stream
         const formReadyStream = await new Promise((resolve, reject) =>
           stream
             .pipe(createWriteStream(dir))
-            .on("finish", () => resolve(createReadStream(dir)))
-            .on("error", () => reject())
+            .on("finish", () => {
+              console.log("finished: ", createReadStream(dir));
+              resolve(createReadStream(dir));
+            })
+            .on("error", (err) => {
+              console.log("errored: ", err);
+              reject();
+            })
         );
 
         // Read file and post to form data
