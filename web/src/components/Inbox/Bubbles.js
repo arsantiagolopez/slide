@@ -12,6 +12,8 @@ const Bubbles = ({ timestampDaysArr }) => {
     setActiveTimestamp,
   } = useContext(MessageContext);
 
+  console.log("activeConversation", activeConversation);
+
   const scrollBoardRef = useRef(null);
 
   // Keep newest message on screen

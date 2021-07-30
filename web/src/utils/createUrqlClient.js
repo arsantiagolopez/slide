@@ -42,11 +42,13 @@ const createUrqlClient = (ssrExchange) => ({
             // Log user in on signup
             cache.invalidate("Query", "me");
             cache.invalidate("Query", "getUniqueMessageUserIds");
+            cache.invalidate("Query", "getNewestUsers");
           },
           login: (_, __, cache) => {
             // Log user in
             cache.invalidate("Query", "me");
             cache.invalidate("Query", "getUniqueMessageUserIds");
+            cache.invalidate("Query", "getNewestUsers");
           },
           logout: (_, __, cache) => {
             // Log user out

@@ -3,11 +3,17 @@ import Head from "next/head";
 import React from "react";
 import { Inbox } from "../components/Inbox";
 import { getLayout } from "../components/Layout";
+import { LoadingScreen } from "../components/LoadingScreen";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useUser } from "../utils/useUser";
 
 const Messages = () => {
   const { user } = useUser({ redirectTo: "/login" });
+
+  // Loading spinner until authentication
+  if (!user?.me) {
+    return <LoadingScreen />;
+  }
 
   return (
     <>

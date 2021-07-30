@@ -8,7 +8,6 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackSharp } from "react-icons/io5";
@@ -18,11 +17,10 @@ import {
   Logout as LogoutMutation,
   UpdateProfile as UpdateProfileMutation,
 } from "../../graphql/mutations/user";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import { showToast } from "../../utils/showToast";
 import { UpdateAvatar } from "../UpdateAvatar";
 
-const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
+const Avatar = ({ user }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -131,7 +129,7 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
       </Drawer>
     </>
   );
-});
+};
 
 export { Avatar };
 

@@ -1,7 +1,8 @@
 import { Button, Flex, Image, Text } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { formatTimestamp } from "../../utils/formatTimestamp";
+import { usePreviews } from "../../utils/usePreviews";
 import { Draggable } from "../Draggable";
 import { SwipeToDelete } from "../SwipeToDelete";
 import { SwipeToDeleteDndContext } from "../SwipeToDeleteDndContext";
@@ -10,48 +11,9 @@ const Previews = () => {
   const [activeDelete, setActiveDelete] = useState(null);
   const [activeTransform, setActiveTransform] = useState(null);
 
-  const {
-    myId,
-    messageList,
-    activeMessage,
-    setActiveMessage,
-    previews,
-    setPreviews,
-    setPreviewsCopy,
-  } = useContext(MessageContext);
+  const { activeMessage, setActiveMessage } = useContext(MessageContext);
 
-  // Create & update lighter previews object with only newest message
-  useEffect(async () => {
-    if (messageList) {
-      let previews = messageList.map(({ conversation, ...otherUserProps }) => {
-        const lastItem = conversation.length - 1;
-        const { createdAt, seen, senderId, ...newestMessageProps } =
-          conversation[lastItem];
-
-        return {
-          ...otherUserProps,
-          newestMessage: {
-            // If last message sent by me, automatically seen
-            seen: senderId === myId ? true : seen,
-            timestamp: createdAt,
-            senderId,
-            ...newestMessageProps,
-          },
-        };
-      });
-
-      // Sort messages from newest to oldest
-      previews.sort((a, b) =>
-        a.newestMessage.timestamp < b.newestMessage.timestamp ? 1 : -1
-      );
-
-      // Update previews
-      setPreviews(previews);
-
-      // Update previews copy (for search functionality)
-      setPreviewsCopy(previews);
-    }
-  }, [messageList]);
+  const { previews, setPreviews } = usePreviews();
 
   const swipeToDeleteDndContextProps = { setActiveDelete, setActiveTransform };
 

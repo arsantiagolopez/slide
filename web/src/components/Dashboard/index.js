@@ -3,13 +3,13 @@ import { withUrqlClient } from "next-urql";
 import React, { useContext, useEffect, useState } from "react";
 import { useClient } from "urql";
 import { MessageContext } from "../../context/MessageContext";
-import { UserContext } from "../../context/UserContext";
 import {
   GetAllFollowingById as GetAllFollowingByIdQuery,
   GetNewestUsers as GetNewestUsersQuery,
 } from "../../graphql/queries/user";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useDimensions } from "../../utils/useDimensions";
+import { useUser } from "../../utils/useUser";
 import { NewUsers } from "../NewUsers";
 import { UserList } from "../UserList";
 
@@ -19,13 +19,14 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
   const [newUsers, setNewUsers] = useState(null);
   const [active, setActive] = useState(null);
 
+  const { user } = useUser({ redirectTo: "login" });
+
   const [screenHeight, setScreenHeight] = useState(null);
 
   const { height } = useDimensions();
 
   useEffect(() => setScreenHeight(height), [height]);
 
-  const { user } = useContext(UserContext);
   const { messageList, myId } = useContext(MessageContext);
 
   // useQuery promise alternative

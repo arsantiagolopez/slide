@@ -138,6 +138,7 @@ const styles = {
     borderRadius: "50%",
     objectFit: "cover",
     boxSize: "3em",
+    minWidth: "3em",
   },
   meta: {
     direction: "column",

@@ -3,7 +3,7 @@ import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import React from "react";
 
 const SortBy = () => {
-  // const { sortBy, setSortBy } = useContext(UserContext);
+  // const { sortBy, setSortBy } = useContext(SortContext);
 
   return (
     <Menu {...styles.wrapper}>

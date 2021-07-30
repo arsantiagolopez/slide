@@ -1,5 +1,4 @@
 import { Flex } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { useDimensions } from "../../utils/useDimensions";
@@ -12,19 +11,10 @@ const Inbox = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const { height } = useDimensions();
-  const { activeMessage, previews, setQuery } = useContext(MessageContext);
-
-  const { query } = useRouter();
+  const { activeMessage } = useContext(MessageContext);
 
   // SSR strategy to make page occupy full height
   useEffect(() => setScreenHeight(height), [height]);
-
-  // Set active user based on router query
-  useEffect(() => {
-    if (query?.user && previews) {
-      setQuery(query.user);
-    }
-  }, [query, previews]);
 
   const searchProps = { searchValue, setSearchValue };
 

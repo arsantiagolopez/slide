@@ -1,6 +1,6 @@
 import { withUrqlClient } from "next-urql";
 import now from "performance-now";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useClient, useMutation, useSubscription } from "urql";
 import { UpdateSeenStatus as UpdateSeenStatusMutation } from "../graphql/mutations/message";
 import {
@@ -12,8 +12,8 @@ import {
 } from "../graphql/queries/message";
 import { NewPrivateMessage as NewPrivateMessageSubscription } from "../graphql/subscriptions/message";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { useUser } from "../utils/useUser";
 import { MessageContext } from "./MessageContext";
+import { UserContext } from "./UserContext";
 
 // messageList is the one source of truth
 // Update all components based on messageList updates
@@ -27,9 +27,8 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
   const [recipientId, setRecipientId] = useState(null);
   const [loadedConversations, setLoadedConversations] = useState(null);
   const [activeTimestamp, setActiveTimestamp] = useState(null);
-  const [query, setQuery] = useState(null);
 
-  const { user } = useUser({ redirectTo: "/login" });
+  const { user } = useContext(UserContext);
 
   const [, updateSeenStatus] = useMutation(UpdateSeenStatusMutation);
 
@@ -209,6 +208,7 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
   // Run on mount
   useEffect(async () => {
     if (user?.me) {
+      console.log("should go in here on login/signup");
       // Fetch conversations (Query)
       // Array is returned from newest to oldest interactions
       const { getUniqueMessageUserIds: userIds } = await queryPromise(
@@ -232,7 +232,9 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
 
       // If active message is temp preview, skip loading conversations
       const isTempPreview = !newestMessage.senderId === true;
-      if (isTempPreview) return;
+      if (isTempPreview) {
+        return setActiveConversation(null);
+      }
 
       const conversationLoaded = loadedConversations.find(
         (conversation) => conversation.recipientId === recipientInfo.userId
@@ -455,8 +457,6 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
         recipientId,
         loadedConversations,
         activeTimestamp,
-        query,
-        setQuery,
         setActiveTimestamp,
         setLoadedConversations,
         setRecipientId,
