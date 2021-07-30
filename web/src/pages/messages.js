@@ -3,7 +3,6 @@ import Head from "next/head";
 import React from "react";
 import { Inbox } from "../components/Inbox";
 import { getLayout } from "../components/Layout";
-import { MessageProvider } from "../context/MessageProvider";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useUser } from "../utils/useUser";
 
@@ -16,9 +15,7 @@ const Messages = () => {
         <title>Slide - Messages</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MessageProvider myId={user?.me.id}>
-        <Inbox />
-      </MessageProvider>
+      <Inbox />
     </>
   );
 };

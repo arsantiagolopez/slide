@@ -38,21 +38,21 @@ const createUrqlClient = (ssrExchange) => ({
     cacheExchange({
       updates: {
         Mutation: {
-          signup: (result, _, cache) => {
-            const { signup } = result;
-
+          signup: (_, __, cache) => {
             // Log user in on signup
             cache.invalidate("Query", "me");
+            cache.invalidate("Query", "getUniqueMessageUserIds");
           },
-          login: (result, _, cache) => {
+          login: (_, __, cache) => {
             // Log user in
             cache.invalidate("Query", "me");
+            cache.invalidate("Query", "getUniqueMessageUserIds");
           },
           logout: (_, __, cache) => {
             // Log user out
             cache.updateQuery({ query: MeQuery }, () => ({ me: null }));
           },
-          updateProfile: (result, _, cache) => {
+          updateProfile: (_, __, cache) => {
             // Revalidate profile info
             cache.invalidate("Query", "me");
           },

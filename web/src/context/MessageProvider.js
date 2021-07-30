@@ -1,3 +1,4 @@
+import { withUrqlClient } from "next-urql";
 import now from "performance-now";
 import React, { useEffect, useState } from "react";
 import { useClient, useMutation, useSubscription } from "urql";
@@ -10,12 +11,14 @@ import {
   GetUserConversation as GetUserConversationQuery,
 } from "../graphql/queries/message";
 import { NewPrivateMessage as NewPrivateMessageSubscription } from "../graphql/subscriptions/message";
+import { createUrqlClient } from "../utils/createUrqlClient";
+import { useUser } from "../utils/useUser";
 import { MessageContext } from "./MessageContext";
 
 // messageList is the one source of truth
 // Update all components based on messageList updates
 
-const MessageProvider = ({ children, myId }) => {
+const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
   const [activeMessage, setActiveMessage] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
   const [previews, setPreviews] = useState(null);
@@ -26,7 +29,11 @@ const MessageProvider = ({ children, myId }) => {
   const [activeTimestamp, setActiveTimestamp] = useState(null);
   const [query, setQuery] = useState(null);
 
+  const { user } = useUser({ redirectTo: "/login" });
+
   const [, updateSeenStatus] = useMutation(UpdateSeenStatusMutation);
+
+  const myId = user?.me?.id;
 
   // Number of full conversation histories to fetch on mount
   const NUM_OF_RECENT_CONVERSATIONS = 3;
@@ -201,20 +208,22 @@ const MessageProvider = ({ children, myId }) => {
 
   // Run on mount
   useEffect(async () => {
-    // Fetch conversations (Query)
-    // Array is returned from newest to oldest interactions
-    const { getUniqueMessageUserIds: userIds } = await queryPromise(
-      GetUniqueMessageUserIdsQuery
-    );
+    if (user?.me) {
+      // Fetch conversations (Query)
+      // Array is returned from newest to oldest interactions
+      const { getUniqueMessageUserIds: userIds } = await queryPromise(
+        GetUniqueMessageUserIdsQuery
+      );
 
-    if (!userIds) return;
+      if (!userIds) return;
 
-    // Fetch all queries
-    await fetchMessages(userIds);
+      // Fetch all queries
+      await fetchMessages(userIds);
 
-    let end = now();
-    // console.log(`TIME QUERY All took ${end - start} ms`);
-  }, []);
+      let end = now();
+      // console.log(`TIME QUERY All took ${end - start} ms`);
+    }
+  }, [user]);
 
   // Toggle seen & fetch conversation if not cached
   useEffect(async () => {
@@ -434,21 +443,6 @@ const MessageProvider = ({ children, myId }) => {
     }
   }, [messageList]);
 
-  // Links that redirect to /messages come with a query.user
-  // parameter containing the userId of the person who's
-  // message should be active.
-
-  // Find user preview, move to top and set as activeMessage
-  useEffect(async () => {
-    if (query && previews) {
-      const preview = previews?.find(
-        ({ recipientInfo: { userId } }) => userId === query
-      );
-
-      if (preview) setActiveMessage(preview);
-    }
-  }, [query, previewsCopy]);
-
   return (
     <MessageContext.Provider
       value={{
@@ -475,6 +469,6 @@ const MessageProvider = ({ children, myId }) => {
       {children}
     </MessageContext.Provider>
   );
-};
+});
 
 export { MessageProvider };

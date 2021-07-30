@@ -4,7 +4,6 @@ import React from "react";
 import { Dashboard } from "../components/Dashboard";
 import { getLayout } from "../components/Layout";
 import { LoadingScreen } from "../components/LoadingScreen";
-import { MessageProvider } from "../context/MessageProvider";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useUser } from "../utils/useUser";
 
@@ -22,9 +21,7 @@ const Index = () => {
         <title>Slide - Messages</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MessageProvider myId={user?.me.id}>
-        <Dashboard />
-      </MessageProvider>
+      <Dashboard />
     </>
   );
 };

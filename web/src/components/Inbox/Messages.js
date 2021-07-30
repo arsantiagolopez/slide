@@ -89,6 +89,8 @@ const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
     setActiveMessage(null);
   };
 
+  const isPictureGradient = recipientInfo?.picture.includes("linear-gradient");
+
   return (
     <Flex {...styles.recipientInfoContainer}>
       <Flex {...styles.nameContainer}>
@@ -106,7 +108,12 @@ const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
 
       <Flex minWidth="2em">
         {/* User avatar */}
-        <Image src={recipientInfo?.picture} {...styles.picture} />
+
+        {isPictureGradient ? (
+          <Flex background={recipientInfo?.picture} {...styles.picture} />
+        ) : (
+          <Image src={recipientInfo?.picture} {...styles.picture} />
+        )}
       </Flex>
 
       {/* Options button */}
@@ -246,7 +253,9 @@ const styles = {
     paddingRight: "2",
   },
   picture: {
-    borderRadius: "full",
+    boxShadow:
+      "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    borderRadius: "50%",
     objectFit: "cover",
     width: { base: "4em", md: "5em" },
     height: { base: "4em", md: "5em" },
