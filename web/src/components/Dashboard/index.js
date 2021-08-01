@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useClient, useQuery } from "urql";
 import {
   GetMessageUserProfiles as GetMessageUserProfilesQuery,
+  GetNewestMessageByUsers as GetNewestMessageByUsersQuery,
   GetUniqueMessageUserIds as GetUniqueMessageUserIdsQuery,
 } from "../../graphql/queries/message";
 import {
@@ -55,20 +56,34 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
     if (user?.me && userIdsData) {
       const { getUniqueMessageUserIds: userIds } = userIdsData || {};
 
+      // Get profile data
       const {
         data: { getMessageUserProfiles },
       } = await client
         .query(GetMessageUserProfilesQuery, { userIds })
         .toPromise();
 
-      let withIdProp = getMessageUserProfiles.map(
-        ({ userId, ...otherProps }) => ({ id: userId, ...otherProps })
+      // Get latest message
+      const {
+        data: { getNewestMessageByUsers },
+      } = await client
+        .query(GetNewestMessageByUsersQuery, { userIds })
+        .toPromise();
+
+      // Turn new messages to map for fastest search
+      const newMessagesMap = new Map(
+        getNewestMessageByUsers?.map((item) => [item.userId, item])
       );
 
-      // Reverse sort
-      withIdProp.reverse();
+      let withIdAndNewMessage = getMessageUserProfiles.map(
+        ({ userId, ...otherProps }) => ({
+          id: userId,
+          newestMessage: newMessagesMap.get(userId).message,
+          ...otherProps,
+        })
+      );
 
-      setConversations(withIdProp);
+      setConversations(withIdAndNewMessage);
     }
   }, [user, userIdsData]);
 
@@ -82,9 +97,6 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
         isFriend: true,
         ...friend,
       }));
-
-      // Reverse sort
-      withRelations.reverse();
 
       setFriends(withRelations);
     }
@@ -150,13 +162,14 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
           users={conversations}
           title="My conversations"
           messageIfEmpty="You haven't started any conversations yet. Spark one up with any newcomers on the side bar!"
-          type="conversations"
+          type="CONVERSATIONS"
           {...listProps}
         />
         <UserList
           users={friends}
           title="My friends"
           messageIfEmpty="Life's better with friends. You my friend, have none. Add one from the side bar!"
+          type="FRIENDS"
           {...listProps}
         />
       </Flex>

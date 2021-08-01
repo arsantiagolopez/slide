@@ -1,5 +1,6 @@
 import { Flex, Heading, Spinner, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { UserContext } from "../../context/UserContext";
 import { Card } from "../Card";
 import { SortBy } from "../SortBy";
 
@@ -13,6 +14,36 @@ const UserList = ({
   friends,
   setFriends,
 }) => {
+  const { sortConversationsBy, sortFriendsBy } = useContext(UserContext);
+
+  // Corresponding sorting choice for dynamic list
+  const rightfulSort =
+    type === "CONVERSATIONS" ? sortConversationsBy : sortFriendsBy;
+
+  useEffect(() => {
+    // console.log(users)
+    if (users && rightfulSort) {
+      // Sort messages from newest to oldest
+      if (rightfulSort === "DATE") {
+        users.sort((a, b) =>
+          a.newestMessage.createdAt > b.newestMessage.createdAt ? 1 : -1
+        );
+      }
+
+      // Sort users alphabetically
+      if (rightfulSort === "NAME") {
+        users.sort((a, b) => (a.name > b.name ? 1 : -1));
+      }
+
+      // Filter out only unread messages
+      if (rightfulSort === "UNREAD") {
+        users = users.filter(
+          ({ newestMessage }) => newestMessage.seen === false
+        );
+      }
+    }
+  }, [users, rightfulSort]);
+
   const cardProps = {
     active,
     setActive,
@@ -21,11 +52,13 @@ const UserList = ({
     setFriends,
   };
 
+  const sortByProps = { type };
+
   return (
     <Flex {...styles.wrapper}>
       <Flex {...styles.bar}>
         <Heading {...styles.heading}>{title}</Heading>
-        <SortBy />
+        <SortBy {...sortByProps} />
       </Flex>
 
       {users ? (

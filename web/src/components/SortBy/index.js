@@ -1,9 +1,26 @@
-import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
-const SortBy = () => {
-  // const { sortBy, setSortBy } = useContext(SortContext);
+const SortBy = ({ type }) => {
+  const {
+    sortConversationsBy,
+    setSortConversationsBy,
+    sortFriendsBy,
+    setSortFriendsBy,
+  } = useContext(UserContext);
+
+  const handleClick = (choice) => {
+    if (type === "CONVERSATIONS") return setSortConversationsBy(choice);
+    if (type === "FRIENDS") return setSortFriendsBy(choice);
+  };
+
+  const isActive = (choice) => {
+    if (type === "CONVERSATIONS" && sortConversationsBy === choice) return true;
+    if (type === "FRIENDS" && sortFriendsBy === choice) return true;
+    return false;
+  };
 
   return (
     <Menu {...styles.wrapper}>
@@ -19,21 +36,29 @@ const SortBy = () => {
 
           <MenuList {...styles.list}>
             <MenuItem
-              // onClick={() => setSortBy("date")}
-              // color={(sortBy === "date" && "link") || "text"}
-              {...styles.item}
+              onClick={() => handleClick("DATE")}
+              fontWeight={isActive("DATE") && "600"}
             >
               Most recent
-              {/* {sortBy === "name" && <CheckIcon fontSize="0.75em" />} */}
+              {isActive("DATE") && <CheckIcon {...styles.icon} />}
             </MenuItem>
             <MenuItem
-              // color={(sortBy === "name" && "link") || "text"}
-              // onClick={() => setSortBy("name")}
-              {...styles.item}
+              onClick={() => handleClick("NAME")}
+              fontWeight={isActive("NAME") && "600"}
             >
               Name
-              {/* {sortBy === "recent" && <CheckIcon fontSize="0.75em" />} */}
+              {isActive("NAME") && <CheckIcon {...styles.icon} />}
             </MenuItem>
+
+            {type === "CONVERSATIONS" && (
+              <MenuItem
+                onClick={() => handleClick("UNREAD")}
+                fontWeight={isActive("UNREAD") && "600"}
+              >
+                Unread
+                {isActive("UNREAD") && <CheckIcon {...styles.icon} />}
+              </MenuItem>
+            )}
           </MenuList>
         </>
       )}
@@ -58,5 +83,8 @@ const styles = {
     fontSize: { base: "1.25em", md: "1.5em" },
   },
   list: {},
-  item: {},
+  icon: {
+    marginLeft: "auto",
+    fontSize: "0.75em",
+  },
 };
