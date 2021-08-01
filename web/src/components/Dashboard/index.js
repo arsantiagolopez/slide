@@ -31,7 +31,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
   useEffect(() => setScreenHeight(height), [height]);
 
   // useQuery promise alternative
-  const client = useClient({ requestPolicy: "network-only" });
+  const client = useClient({ requestPolicy: "cache-and-network" });
 
   // Refetch queries on "/" load
   const [{ data: userIdsData }] = useQuery({
@@ -92,7 +92,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   // Fetch new users
   useEffect(async () => {
-    if (!newUsers && user?.me && friends) {
+    if (user?.me && friends && newestUsersData) {
       const { getNewestUsers } = newestUsersData || {};
 
       // Filter me out of users
