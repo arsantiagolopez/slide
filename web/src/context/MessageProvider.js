@@ -1,4 +1,3 @@
-import { withUrqlClient } from "next-urql";
 import now from "performance-now";
 import React, { useContext, useEffect, useState } from "react";
 import { useClient, useMutation, useSubscription } from "urql";
@@ -11,14 +10,13 @@ import {
   GetUserConversation as GetUserConversationQuery,
 } from "../graphql/queries/message";
 import { NewPrivateMessage as NewPrivateMessageSubscription } from "../graphql/subscriptions/message";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import { MessageContext } from "./MessageContext";
 import { UserContext } from "./UserContext";
 
 // messageList is the one source of truth
 // Update all components based on messageList updates
 
-const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
+const MessageProvider = ({ children }) => {
   const [activeMessage, setActiveMessage] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
   const [previews, setPreviews] = useState(null);
@@ -208,7 +206,6 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
   // Run on mount
   useEffect(async () => {
     if (user?.me) {
-      console.log("should go in here on login/signup");
       // Fetch conversations (Query)
       // Array is returned from newest to oldest interactions
       const { getUniqueMessageUserIds: userIds } = await queryPromise(
@@ -469,6 +466,6 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
       {children}
     </MessageContext.Provider>
   );
-});
+};
 
 export { MessageProvider };

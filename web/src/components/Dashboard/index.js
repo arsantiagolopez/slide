@@ -1,8 +1,11 @@
 import { Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useClient } from "urql";
-import { MessageContext } from "../../context/MessageContext";
+import {
+  GetMessageUserProfiles as GetMessageUserProfilesQuery,
+  GetUniqueMessageUserIds as GetUniqueMessageUserIdsQuery,
+} from "../../graphql/queries/message";
 import {
   GetAllFollowingById as GetAllFollowingByIdQuery,
   GetNewestUsers as GetNewestUsersQuery,
@@ -19,7 +22,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
   const [newUsers, setNewUsers] = useState(null);
   const [active, setActive] = useState(null);
 
-  const { user } = useUser({ redirectTo: "login" });
+  const { user } = useUser({ redirectTo: "/login" });
 
   const [screenHeight, setScreenHeight] = useState(null);
 
@@ -27,40 +30,30 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   useEffect(() => setScreenHeight(height), [height]);
 
-  const { messageList, myId } = useContext(MessageContext);
-
   // useQuery promise alternative
   const client = useClient();
 
   // Fetch conversations
   useEffect(async () => {
-    if (user?.me && messageList) {
-      // Create new conversation object where newMessage is included
-      let users = messageList.map(
-        ({ recipientInfo: { userId: id, name, picture }, conversation }) => {
-          // Last message is the most recent
-          const lastItem = conversation.length - 1;
-          const newestMessage = conversation[lastItem];
-          const { seen, senderId } = newestMessage;
-          const hasNewMessage = seen === false && senderId !== myId;
+    if (user?.me) {
+      console.log("in hea");
+      const {
+        data: { getUniqueMessageUserIds: userIds },
+      } = await client.query(GetUniqueMessageUserIdsQuery).toPromise();
 
-          return { id, name, picture, hasNewMessage, newestMessage };
-        }
+      const {
+        data: { getMessageUserProfiles },
+      } = await client
+        .query(GetMessageUserProfilesQuery, { userIds })
+        .toPromise();
+
+      const withIdProp = getMessageUserProfiles.map(
+        ({ userId, ...otherProps }) => ({ id: userId, ...otherProps })
       );
 
-      // Sort messages from newest to oldest
-      users.sort((a, b) =>
-        a.newestMessage.createdAt < b.newestMessage.createdAt ? 1 : -1
-      );
-
-      // Strip newestMessage
-      const sortedUsers = users.map(
-        ({ newestMessage, ...otherMessageProps }) => ({ ...otherMessageProps })
-      );
-
-      setConversations(sortedUsers);
+      setConversations(withIdProp);
     }
-  }, [user, messageList]);
+  }, [user]);
 
   // Fetch friends
   useEffect(async () => {

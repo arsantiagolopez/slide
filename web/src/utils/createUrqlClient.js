@@ -4,7 +4,6 @@ import ws from "isomorphic-ws";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { dedupExchange, subscriptionExchange } from "urql";
 import Config from "../config";
-import { Me as MeQuery } from "../graphql/queries/user";
 
 const SERVER_URL = Config.serverUrl;
 
@@ -52,7 +51,7 @@ const createUrqlClient = (ssrExchange) => ({
           },
           logout: (_, __, cache) => {
             // Log user out
-            cache.updateQuery({ query: MeQuery }, () => ({ me: null }));
+            cache.invalidate("Query", "me");
           },
           updateProfile: (_, __, cache) => {
             // Revalidate profile info
