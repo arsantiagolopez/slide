@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import React, { useEffect, useState } from "react";
-import { useClient } from "urql";
+import { useClient, useQuery } from "urql";
 import {
   GetMessageUserProfiles as GetMessageUserProfilesQuery,
   GetUniqueMessageUserIds as GetUniqueMessageUserIdsQuery,
@@ -31,15 +31,29 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
   useEffect(() => setScreenHeight(height), [height]);
 
   // useQuery promise alternative
-  const client = useClient();
+  const client = useClient({ requestPolicy: "network-only" });
+
+  // Refetch queries on "/" load
+  const [{ data: userIdsData }] = useQuery({
+    query: GetUniqueMessageUserIdsQuery,
+    requestPolicy: "cache-and-network",
+  });
+
+  const [{ data: friendsData }] = useQuery({
+    query: GetAllFollowingByIdQuery,
+    variables: { id: user?.me?.id },
+    requestPolicy: "cache-and-network",
+  });
+
+  const [{ data: newestUsersData }] = useQuery({
+    query: GetNewestUsersQuery,
+    requestPolicy: "cache-and-network",
+  });
 
   // Fetch conversations
   useEffect(async () => {
-    if (user?.me) {
-      console.log("in hea");
-      const {
-        data: { getUniqueMessageUserIds: userIds },
-      } = await client.query(GetUniqueMessageUserIdsQuery).toPromise();
+    if (user?.me && userIdsData) {
+      const { getUniqueMessageUserIds: userIds } = userIdsData || {};
 
       const {
         data: { getMessageUserProfiles },
@@ -47,39 +61,39 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
         .query(GetMessageUserProfilesQuery, { userIds })
         .toPromise();
 
-      const withIdProp = getMessageUserProfiles.map(
+      let withIdProp = getMessageUserProfiles.map(
         ({ userId, ...otherProps }) => ({ id: userId, ...otherProps })
       );
 
+      // Reverse sort
+      withIdProp.reverse();
+
       setConversations(withIdProp);
     }
-  }, [user]);
+  }, [user, userIdsData]);
 
   // Fetch friends
   useEffect(async () => {
-    if (!friends && user?.me) {
-      const {
-        data: { getAllFollowingById },
-      } = await client
-        .query(GetAllFollowingByIdQuery, { id: user?.me?.id })
-        .toPromise();
+    if (user?.me && friendsData) {
+      const { getAllFollowingById } = friendsData || {};
 
       // Add isFriend prop
-      const withRelations = getAllFollowingById?.map((friend) => ({
+      let withRelations = getAllFollowingById?.map((friend) => ({
         isFriend: true,
         ...friend,
       }));
 
+      // Reverse sort
+      withRelations.reverse();
+
       setFriends(withRelations);
     }
-  }, [user]);
+  }, [user, friendsData]);
 
   // Fetch new users
   useEffect(async () => {
     if (!newUsers && user?.me && friends) {
-      const {
-        data: { getNewestUsers },
-      } = await client.query(GetNewestUsersQuery).toPromise();
+      const { getNewestUsers } = newestUsersData || {};
 
       // Filter me out of users
       const otherUsers = getNewestUsers.filter(
@@ -100,7 +114,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
       setNewUsers(withRelations);
     }
-  }, [user, friends]);
+  }, [user, friends, newestUsersData]);
 
   // Update new users on new friend interactions
   useEffect(() => {

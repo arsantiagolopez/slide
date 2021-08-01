@@ -35,6 +35,11 @@ const createUrqlClient = (ssrExchange) => ({
     dedupExchange,
     // Normalized caching
     cacheExchange({
+      keys: {
+        MessageUserProfiles: (data) => data.userId,
+        NewestMessage: (data) => data.userId,
+        Conversation: (data) => data.userId,
+      },
       updates: {
         Mutation: {
           signup: (_, __, cache) => {
