@@ -17,6 +17,8 @@ const UserList = ({
   const [sortedUsers, setSortedUsers] = useState(null);
   const { user, sortConversationsBy, sortFriendsBy } = useContext(UserContext);
 
+  const myId = user?.me?.id;
+
   // Corresponding sorting choice for dynamic list
   const rightfulSort =
     type === "CONVERSATIONS" ? sortConversationsBy : sortFriendsBy;
@@ -49,7 +51,7 @@ const UserList = ({
       if (rightfulSort === "UNREAD") {
         setSortedUsers([
           ...users.filter(({ newestMessage: { seen, senderId } }) =>
-            seen === true || senderId === user?.me?.id ? false : true
+            seen === true || senderId === myId ? false : true
           ),
         ]);
       }
@@ -62,6 +64,7 @@ const UserList = ({
     type,
     friends,
     setFriends,
+    myId,
   };
 
   const sortByProps = { type };

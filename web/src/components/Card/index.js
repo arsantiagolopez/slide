@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import React from "react";
 import { DetailedProfile } from "../DetailedProfile";
 
-const Card = ({ user, active, setActive, type, friends, setFriends }) => {
-  const { id, name, picture } = user;
+const Card = ({ user, active, setActive, type, friends, setFriends, myId }) => {
+  const { id, name, picture, newestMessage } = user || {};
 
   const isPictureGradient = picture.includes("linear-gradient");
 
@@ -23,6 +23,11 @@ const Card = ({ user, active, setActive, type, friends, setFriends }) => {
     }
     return setActive(id);
   };
+
+  const hasNewMessage =
+    type === "CONVERSATIONS" &&
+    newestMessage?.seen === false &&
+    newestMessage?.senderId !== myId;
 
   const detailedProfileProps = {
     user,
@@ -57,7 +62,7 @@ const Card = ({ user, active, setActive, type, friends, setFriends }) => {
 
       {
         // Show new message notification only on conversations
-        user?.hasNewMessage && <Flex {...styles.newMessageNotification} />
+        hasNewMessage && <Flex {...styles.newMessageNotification} />
       }
     </Flex>
   );
