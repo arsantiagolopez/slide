@@ -64,7 +64,6 @@ const styles = {
   },
   preview: {
     fontSize: "1.25em",
-    paddingY: "1rem",
     fontWeight: "600",
   },
   input: {

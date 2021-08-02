@@ -103,13 +103,13 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
             </Flex>
 
             <UpdateAvatar {...updateAvatarProps}>
-              <Flex>
+              <>
                 {isPictureGradient ? (
                   <Flex background={avatarSrc} {...styles.picture} />
                 ) : (
                   <Image src={avatarSrc} {...styles.picture} />
                 )}
-              </Flex>
+              </>
             </UpdateAvatar>
 
             <Flex {...styles.field}>
@@ -117,7 +117,7 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
               <Editable {...nameEditableProps} />
             </Flex>
 
-            <Flex {...styles.field} {...styles.logout}>
+            <Flex {...styles.logout}>
               <Button
                 onClick={handleLogout}
                 isLoading={logoutLoading}
@@ -169,7 +169,7 @@ const styles = {
     width: "100%",
     fontSize: "2em",
     fontWeight: "bold",
-    paddingY: "2em",
+    paddingY: "5vh",
   },
   returnButton: {
     marginRight: "1rem",
@@ -184,7 +184,7 @@ const styles = {
   },
   field: {
     direction: "column",
-    paddingY: "3em",
+    paddingY: "3vh",
     paddingX: "1em",
     width: "100%",
   },
@@ -193,7 +193,7 @@ const styles = {
   },
   logout: {
     position: "absolute",
-    bottom: "3em",
+    bottom: { base: "5em", md: "10vh" },
   },
   logoutButton: {
     alignSelf: "center",

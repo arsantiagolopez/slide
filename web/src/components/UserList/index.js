@@ -1,5 +1,5 @@
 import { Flex, Heading, Spinner, Text } from "@chakra-ui/react";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import { Card } from "../Card";
 import { SortBy } from "../SortBy";
@@ -14,7 +14,8 @@ const UserList = ({
   friends,
   setFriends,
 }) => {
-  const { sortConversationsBy, sortFriendsBy } = useContext(UserContext);
+  const [sortedUsers, setSortedUsers] = useState(null);
+  const { user, sortConversationsBy, sortFriendsBy } = useContext(UserContext);
 
   // Corresponding sorting choice for dynamic list
   const rightfulSort =
@@ -23,23 +24,34 @@ const UserList = ({
   useEffect(() => {
     // console.log(users)
     if (users && rightfulSort) {
-      // Sort messages from newest to oldest
+      // Sort messages from newest to oldest (default)
       if (rightfulSort === "DATE") {
-        users.sort((a, b) =>
-          a.newestMessage.createdAt > b.newestMessage.createdAt ? 1 : -1
-        );
+        setSortedUsers([
+          ...users.sort(
+            // Dates in epoch format
+            (a, b) =>
+              b.newestMessage.createdAt.toString() -
+              a.newestMessage.createdAt.toString()
+          ),
+        ]);
       }
 
       // Sort users alphabetically
       if (rightfulSort === "NAME") {
-        users.sort((a, b) => (a.name > b.name ? 1 : -1));
+        setSortedUsers([
+          ...users.sort((a, b) =>
+            a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+          ),
+        ]);
       }
 
       // Filter out only unread messages
       if (rightfulSort === "UNREAD") {
-        users = users.filter(
-          ({ newestMessage }) => newestMessage.seen === false
-        );
+        setSortedUsers([
+          ...users.filter(({ newestMessage: { seen, senderId } }) =>
+            seen === true || senderId === user?.me?.id ? false : true
+          ),
+        ]);
       }
     }
   }, [users, rightfulSort]);
@@ -61,12 +73,12 @@ const UserList = ({
         <SortBy {...sortByProps} />
       </Flex>
 
-      {users ? (
+      {sortedUsers ? (
         <Flex {...styles.content}>
-          {users?.length ? (
+          {sortedUsers?.length ? (
             <Flex {...styles.cards}>
               <Flex {...styles.spaceBlock} />
-              {users?.map((user) => (
+              {sortedUsers?.map((user) => (
                 <Card key={user.id} user={user} {...cardProps} />
               ))}
               <Flex {...styles.spaceBlock} />
