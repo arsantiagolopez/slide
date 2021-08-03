@@ -15,7 +15,7 @@ const Card = ({ user, active, setActive, type, friends, setFriends, myId }) => {
   // Navigate to messages if clicked,
   // open detailed preview otherwise
   const handleClick = () => {
-    if (type === "conversations") {
+    if (type === "CONVERSATIONS") {
       return router.push({
         pathname: "/messages",
         query: { user: id },

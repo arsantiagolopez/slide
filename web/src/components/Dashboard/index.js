@@ -35,40 +35,51 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
   const client = useClient({ requestPolicy: "cache-and-network" });
 
   // Refetch queries on "/" load
+  // Get user IDs
   const [{ data: userIdsData }] = useQuery({
     query: GetUniqueMessageUserIdsQuery,
     requestPolicy: "cache-and-network",
   });
 
+  // Get following
   const [{ data: friendsData }] = useQuery({
     query: GetAllFollowingByIdQuery,
     variables: { id: user?.me?.id },
     requestPolicy: "cache-and-network",
   });
 
+  // Get newest users
   const [{ data: newestUsersData }] = useQuery({
     query: GetNewestUsersQuery,
     requestPolicy: "cache-and-network",
   });
 
+  // Get profile data
+  const [{ data: userProfiles }] = useQuery({
+    query: GetMessageUserProfilesQuery,
+    variables: {
+      userIds: userIdsData?.getUniqueMessageUserIds,
+    },
+    pause: !userIdsData,
+    requestPolicy: "cache-and-network",
+  });
+
+  // Get latest message
+  const [{ data: newestMessageByUsers }] = useQuery({
+    query: GetNewestMessageByUsersQuery,
+    variables: {
+      userIds: userIdsData?.getUniqueMessageUserIds,
+    },
+    pause: !userIdsData,
+    requestPolicy: "cache-and-network",
+  });
+
   // Fetch conversations
   useEffect(async () => {
-    if (user?.me && userIdsData) {
-      const { getUniqueMessageUserIds: userIds } = userIdsData || {};
-
-      // Get profile data
-      const {
-        data: { getMessageUserProfiles },
-      } = await client
-        .query(GetMessageUserProfilesQuery, { userIds })
-        .toPromise();
-
-      // Get latest message
-      const {
-        data: { getNewestMessageByUsers },
-      } = await client
-        .query(GetNewestMessageByUsersQuery, { userIds })
-        .toPromise();
+    const dataLoaded = userIdsData && userProfiles && newestMessageByUsers;
+    if (user?.me && dataLoaded) {
+      const { getNewestMessageByUsers } = newestMessageByUsers;
+      const { getMessageUserProfiles } = userProfiles;
 
       // Turn new messages to map for fastest search
       const newMessagesMap = new Map(
@@ -85,7 +96,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
       setConversations(withIdAndNewMessage);
     }
-  }, [user, userIdsData]);
+  }, [user, userIdsData, userProfiles, newestMessageByUsers]);
 
   // Fetch friends
   useEffect(async () => {
