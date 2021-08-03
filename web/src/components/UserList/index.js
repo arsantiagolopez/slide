@@ -32,8 +32,8 @@ const UserList = ({
           ...users.sort(
             // Dates in epoch format
             (a, b) =>
-              b.newestMessage.createdAt.toString() -
-              a.newestMessage.createdAt.toString()
+              b?.newestMessage?.createdAt?.toString() -
+              a?.newestMessage?.createdAt?.toString()
           ),
         ]);
       }

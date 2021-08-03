@@ -1,6 +1,6 @@
 import now from "performance-now";
 import React, { useContext, useEffect, useState } from "react";
-import { useClient, useMutation, useSubscription } from "urql";
+import { useClient, useMutation, useQuery, useSubscription } from "urql";
 import { UpdateSeenStatus as UpdateSeenStatusMutation } from "../graphql/mutations/message";
 import {
   GetMessageUserProfiles as GetMessageUserProfilesQuery,
@@ -39,7 +39,7 @@ const MessageProvider = ({ children }) => {
   let start = now();
 
   // useQuery promise alternative
-  const client = useClient();
+  const client = useClient({ requestPolicy: "network-only" });
 
   // Promisify query & return data
   const queryPromise = async (query, variables) => {
@@ -85,38 +85,12 @@ const MessageProvider = ({ children }) => {
   };
 
   // Fetch all queries
-  const fetchMessages = async (userIds) => {
-    // Get user profiles (Query)
-    // Returns array of unique ids you have interacted with
-    const { getMessageUserProfiles: userProfiles } = await queryPromise(
-      GetMessageUserProfilesQuery,
-      {
-        userIds,
-      }
-    );
-
-    // Get newest message by users (Query)
-    // Returns array of most recent message by users
-    const { getNewestMessageByUsers: newestMessageByUsers } =
-      await queryPromise(GetNewestMessageByUsersQuery, {
-        userIds,
-      });
-
-    // Get last 3 recent conversations (Query)
-    // Returns array of the x most recent full conversations
-    const { getRecentConversations: recentConversations } = await queryPromise(
-      GetRecentConversationsQuery,
-      {
-        last: NUM_OF_RECENT_CONVERSATIONS,
-        userIds,
-      }
-    );
-
+  const fetchMessages = () => {
     // All queries ran, pass down previews & last 3 conversations
     const messages = compressMessages(
-      userProfiles,
-      newestMessageByUsers,
-      recentConversations
+      userProfiles?.getMessageUserProfiles,
+      newestMessageByUsers?.getNewestMessageByUsers,
+      recentConversations?.getRecentConversations
     );
 
     setMessageList(messages);
@@ -203,24 +177,70 @@ const MessageProvider = ({ children }) => {
    *
    ***********************************************************************/
 
+  // Fetch conversations (Query)
+  // Array is returned from newest to oldest interactions
+  // Refetch queries on "/" load
+  const [{ data: userIdsData }] = useQuery({
+    query: GetUniqueMessageUserIdsQuery,
+    requestPolicy: "cache-and-network",
+  });
+
+  // Get user profiles (Query)
+  // Returns array of unique ids you have interacted with
+  const [{ data: userProfiles }] = useQuery({
+    query: GetMessageUserProfilesQuery,
+    variables: {
+      userIds: userIdsData?.getUniqueMessageUserIds,
+    },
+    pause: !userIdsData,
+    requestPolicy: "cache-and-network",
+  });
+
+  // Get newest message by users (Query)
+  // Returns array of most recent message by users
+  const [{ data: newestMessageByUsers }] = useQuery({
+    query: GetNewestMessageByUsersQuery,
+    variables: {
+      userIds: userIdsData?.getUniqueMessageUserIds,
+    },
+    pause: !userIdsData,
+    requestPolicy: "cache-and-network",
+  });
+
+  // Get last 3 recent conversations (Query)
+  // Returns array of the x most recent full conversations
+  const [{ data: recentConversations }] = useQuery({
+    query: GetRecentConversationsQuery,
+    variables: {
+      last: NUM_OF_RECENT_CONVERSATIONS,
+      userIds: userIdsData?.getUniqueMessageUserIds,
+    },
+    pause: !userIdsData,
+    requestPolicy: "cache-and-network",
+  });
+
   // Run on mount
-  useEffect(async () => {
-    if (user?.me) {
-      // Fetch conversations (Query)
-      // Array is returned from newest to oldest interactions
-      const { getUniqueMessageUserIds: userIds } = await queryPromise(
-        GetUniqueMessageUserIdsQuery
-      );
+  useEffect(() => {
+    const dataLoaded =
+      userIdsData &&
+      userProfiles &&
+      newestMessageByUsers &&
+      recentConversations;
 
-      if (!userIds) return;
-
+    if (user?.me && dataLoaded) {
       // Fetch all queries
-      await fetchMessages(userIds);
+      fetchMessages();
 
       let end = now();
       // console.log(`TIME QUERY All took ${end - start} ms`);
     }
-  }, [user]);
+  }, [
+    user,
+    userIdsData,
+    userProfiles,
+    newestMessageByUsers,
+    recentConversations,
+  ]);
 
   // Toggle seen & fetch conversation if not cached
   useEffect(async () => {
@@ -229,9 +249,7 @@ const MessageProvider = ({ children }) => {
 
       // If active message is temp preview, skip loading conversations
       const isTempPreview = !newestMessage.senderId === true;
-      if (isTempPreview) {
-        return setActiveConversation(null);
-      }
+      if (isTempPreview) return setActiveConversation(null);
 
       const conversationLoaded = loadedConversations.find(
         (conversation) => conversation.recipientId === recipientInfo.userId
