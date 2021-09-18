@@ -181,6 +181,7 @@ const styles = {
     borderRadius: "50%",
     objectFit: "cover",
     boxSize: { base: "60vw", md: "15vw" },
+    marginY: { base: "2em", md: "2vh" },
   },
   field: {
     direction: "column",

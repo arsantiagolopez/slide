@@ -89,7 +89,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
       let withIdAndNewMessage = getMessageUserProfiles.map(
         ({ userId, ...otherProps }) => ({
           id: userId,
-          newestMessage: newMessagesMap.get(userId).message,
+          newestMessage: newMessagesMap.get(userId)?.message,
           ...otherProps,
         })
       );
