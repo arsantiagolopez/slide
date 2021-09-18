@@ -53,7 +53,7 @@ const mySession = session({
   // Only save session key on auth
   saveUninitialized: false,
   store: new RedisStore({ client: redisClient }),
-  cookie: {
+  cookie: NODE_ENV !== "development" && {
     // Lasts 1 day
     maxAge: 1000 * 60 * 60 * 24,
     // Set to true if only want to store in HTTPS
