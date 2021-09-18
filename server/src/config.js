@@ -12,6 +12,7 @@ export default {
   serverUrl: process.env.SERVER_URL || "http://localhost:8000",
   clientUrl: process.env.CLIENT_URL || "http://localhost:7000",
   redisUrl: process.env.REDIS_URL || "redis://localhost:6379",
+  domain: process.env.DOMAIN,
 
   // ImgBB
   imgbb: {

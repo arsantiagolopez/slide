@@ -22,6 +22,7 @@ const NODE_ENV = Config.nodeEnv;
 const SESSION_SECRET = Config.sessionSecret;
 const PORT = Config.port;
 const REDIS_URL = Config.redisUrl;
+const DOMAIN = Config.domain;
 
 // Express server
 const app = express();
@@ -59,7 +60,8 @@ const mySession = session({
     secure: NODE_ENV === "production",
     // Prevents client side JS from reading cookie
     httpOnly: true,
-    sameSite: NODE_ENV === "production" ? "none" : "lax",
+    sameSite: "lax",
+    domain: DOMAIN,
   },
 });
 
