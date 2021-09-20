@@ -44,15 +44,16 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   // Make conversation cards
   useEffect(() => {
-    if (messageList) {
+    if (user?.me && messageList) {
       // Get newest message
       const cards = messageList.map(({ user, messages }) => ({
         ...user,
         newestMessage: messages[0],
       }));
+
       setConversations(cards);
     }
-  }, [messageList]);
+  }, [user, messageList]);
 
   // Fetch friends
   useEffect(async () => {

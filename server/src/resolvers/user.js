@@ -225,18 +225,17 @@ export default {
     },
 
     /**
-     * Destroy and thus log user out, by destroying their
+     * Log user out by destroying their
      * session/deleting their cookie.
      */
     logout: (_, __, { req, res }) =>
       new Promise((resolve) => {
+        console.log(req.session);
         // Destroy session
         req.session.destroy((err) => {
           // Clear session cookie
           res.clearCookie(COOKIE_NAME);
-
           if (err) return resolve(false);
-
           return resolve(true);
         });
       }),
