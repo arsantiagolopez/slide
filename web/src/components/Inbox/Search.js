@@ -1,12 +1,12 @@
 import { Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoSearchSharp } from "react-icons/io5";
-import { MessageContext } from "../../context/MessageContext";
+import { usePreviews } from "../../utils/usePreviews";
 
 const Search = ({ searchValue, setSearchValue }) => {
   const [isSearchFocused, setSearchFocused] = useState(false);
 
-  const { previewsCopy, setPreviews } = useContext(MessageContext);
+  const { previewsCopy, setPreviews } = usePreviews();
 
   const handleChange = (event) => setSearchValue(event.target.value);
 
@@ -17,9 +17,7 @@ const Search = ({ searchValue, setSearchValue }) => {
         // Turn to lowercase to compare
         const name = user.name.toLowerCase();
         const search = searchValue?.toLowerCase();
-
         const isMatch = name.includes(search);
-
         if (isMatch) return true;
       });
 

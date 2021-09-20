@@ -1,10 +1,8 @@
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useClient } from "urql";
 import { MessageContext } from "../context/MessageContext";
 import { GetUserProfileById as GetUserProfileByIdQuery } from "../graphql/queries/user";
-
-// messageList: { user: {...}, messages: {...} }
 
 const getPreviews = (myId, list, queryUser, setActiveMessage, router) => {
   let previews = list.map(({ user, messages }) => {
@@ -78,9 +76,15 @@ const getPreviews = (myId, list, queryUser, setActiveMessage, router) => {
 };
 
 const usePreviews = () => {
-  const [previews, setPreviews] = useState(null);
-  const { myId, messageList, setPreviewsCopy, setActiveMessage } =
-    useContext(MessageContext);
+  const {
+    myId,
+    messageList,
+    previews,
+    setPreviews,
+    previewsCopy,
+    setPreviewsCopy,
+    setActiveMessage,
+  } = useContext(MessageContext);
 
   const router = useRouter();
   const { query } = router || {};
@@ -129,7 +133,7 @@ const usePreviews = () => {
     }
   }, [messageList, query]);
 
-  return { previews, setPreviews };
+  return { previews, setPreviews, previewsCopy };
 };
 
 export { usePreviews };
