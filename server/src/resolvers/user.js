@@ -230,12 +230,15 @@ export default {
      */
     logout: (_, __, { req, res }) =>
       new Promise((resolve) => {
-        console.log(req.session);
         // Destroy session
         req.session.destroy((err) => {
           // Clear session cookie
           res.clearCookie(COOKIE_NAME);
-          if (err) return resolve(false);
+          if (err) {
+            console.log(err);
+            return resolve(false);
+          }
+          console.log("*** delete cookie successfully");
           return resolve(true);
         });
       }),
