@@ -1,8 +1,8 @@
 import { Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "urql";
-import { MessageContext } from "../../context/MessageContext";
+import { GetConversations as GetConversationsQuery } from "../../graphql/queries/message";
 import {
   GetAllFollowingById as GetAllFollowingByIdQuery,
   GetNewestUsers as GetNewestUsersQuery,
@@ -21,13 +21,17 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   const { user } = useUser({ redirectTo: "/login" });
 
-  const { messageList } = useContext(MessageContext);
-
   const [screenHeight, setScreenHeight] = useState(null);
 
   const { height } = useDimensions();
 
   useEffect(() => setScreenHeight(height), [height]);
+
+  // Get conversations
+  const [{ data: conversationsData }] = useQuery({
+    query: GetConversationsQuery,
+    requestPolicy: "cache-and-network",
+  });
 
   // Get following
   const [{ data: friendsData }] = useQuery({
@@ -44,16 +48,16 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   // Make conversation cards
   useEffect(() => {
-    if (user?.me && messageList) {
+    if (user?.me && conversationsData) {
+      const { getConversations } = conversationsData;
       // Get newest message
-      const cards = messageList.map(({ user, messages }) => ({
+      const cards = getConversations.map(({ user, messages }) => ({
         ...user,
         newestMessage: messages[0],
       }));
-
       setConversations(cards);
     }
-  }, [user, messageList]);
+  }, [user, conversationsData]);
 
   // Fetch friends
   useEffect(async () => {

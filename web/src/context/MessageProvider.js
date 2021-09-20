@@ -76,7 +76,7 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
 
   // Run on mount
   useEffect(() => {
-    if (user?.me && conversations) {
+    if (user && conversations) {
       const { getConversations } = conversations;
       // Get and store conversations
       setMessageList(getConversations);
