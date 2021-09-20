@@ -234,11 +234,7 @@ export default {
         req.session.destroy((err) => {
           // Clear session cookie
           res.clearCookie(COOKIE_NAME, { domain: DOMAIN });
-          if (err) {
-            console.log(err);
-            return resolve(false);
-          }
-          console.log("*** delete cookie successfully");
+          if (err) resolve(false);
           return resolve(true);
         });
       }),
