@@ -5,7 +5,7 @@ import { handleError } from "../utils/handleError";
 
 // Constants
 const COOKIE_NAME = Config.cookieName;
-const CLIENT_URL = Config.clientUrl;
+const DOMAIN = Config.domain;
 
 export default {
   Query: {
@@ -233,7 +233,7 @@ export default {
         // Destroy session
         req.session.destroy((err) => {
           // Clear session cookie
-          res.clearCookie(COOKIE_NAME);
+          res.clearCookie(COOKIE_NAME, { domain: DOMAIN });
           if (err) {
             console.log(err);
             return resolve(false);
