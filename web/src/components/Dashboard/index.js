@@ -50,11 +50,13 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
   useEffect(() => {
     if (user?.me && conversationsData) {
       const { getConversations } = conversationsData;
+
       // Get newest message
       const cards = getConversations.map(({ user, messages }) => ({
         ...user,
         newestMessage: messages[0],
       }));
+
       setConversations(cards);
     }
   }, [user, conversationsData]);
