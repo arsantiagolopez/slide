@@ -10,6 +10,7 @@ import {
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useDimensions } from "../../utils/useDimensions";
 import { useUser } from "../../utils/useUser";
+import { LoadingScreen } from "../LoadingScreen";
 import { NewUsers } from "../NewUsers";
 import { UserList } from "../UserList";
 
@@ -48,7 +49,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   // Make conversation cards
   useEffect(() => {
-    if (conversationsData) {
+    if (user?.me && conversationsData) {
       const { getConversations } = conversationsData;
 
       // Get newest message
@@ -59,7 +60,7 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
       setConversations(cards);
     }
-  }, [conversationsData]);
+  }, [user, conversationsData]);
 
   // Fetch friends
   useEffect(async () => {
@@ -129,30 +130,34 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
     setFriends,
   };
 
-  return (
-    <Flex {...styles.wrapper}>
-      <Flex {...styles.left}>
-        <UserList
-          users={conversations}
-          title="My conversations"
-          messageIfEmpty="You haven't started any conversations yet. Spark one up with any newcomers on the side bar!"
-          type="CONVERSATIONS"
-          {...listProps}
-        />
-        <UserList
-          users={friends}
-          title="My friends"
-          messageIfEmpty="Life's better with friends. You my friend, have none. Add one from the side bar!"
-          type="FRIENDS"
-          {...listProps}
-        />
-      </Flex>
+  if (user?.me) {
+    return (
+      <Flex {...styles.wrapper}>
+        <Flex {...styles.left}>
+          <UserList
+            users={conversations}
+            title="My conversations"
+            messageIfEmpty="You haven't started any conversations yet. Spark one up with any newcomers on the side bar!"
+            type="CONVERSATIONS"
+            {...listProps}
+          />
+          <UserList
+            users={friends}
+            title="My friends"
+            messageIfEmpty="Life's better with friends. You my friend, have none. Add one from the side bar!"
+            type="FRIENDS"
+            {...listProps}
+          />
+        </Flex>
 
-      <Flex {...styles.right}>
-        <NewUsers users={newUsers} height={screenHeight} {...listProps} />
+        <Flex {...styles.right}>
+          <NewUsers users={newUsers} height={screenHeight} {...listProps} />
+        </Flex>
       </Flex>
-    </Flex>
-  );
+    );
+  }
+
+  return <LoadingScreen />;
 });
 
 export { Dashboard };
