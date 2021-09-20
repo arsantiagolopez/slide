@@ -28,7 +28,7 @@ const NewUsers = ({
         {isCollapsed ? (
           <Icon as={IoPeopleSharp} {...styles.icon} />
         ) : (
-          <Heading {...styles.heading}>New users</Heading>
+          <Heading {...styles.heading}>New Users</Heading>
         )}
 
         {isCollapsed ? (

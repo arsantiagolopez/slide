@@ -136,14 +136,14 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
         <Flex {...styles.left}>
           <UserList
             users={conversations}
-            title="My conversations"
+            title="My Conversations"
             messageIfEmpty="You haven't started any conversations yet. Spark one up with any newcomers on the side bar!"
             type="CONVERSATIONS"
             {...listProps}
           />
           <UserList
             users={friends}
-            title="My friends"
+            title="My Friends"
             messageIfEmpty="Life's better with friends. You my friend, have none. Add one from the side bar!"
             type="FRIENDS"
             {...listProps}
