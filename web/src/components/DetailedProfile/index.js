@@ -26,7 +26,7 @@ const DetailedProfile = ({ user, active, setActive, friends, setFriends }) => {
   const [, followUserMutation] = useMutation(FollowUserMutation);
   const [, unfollowUserMutation] = useMutation(UnfollowUserMutation);
 
-  const isPictureGradient = picture.includes("linear-gradient");
+  const isPictureGradient = picture?.includes("linear-gradient");
 
   const router = useRouter();
 

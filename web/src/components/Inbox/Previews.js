@@ -22,8 +22,8 @@ const Previews = () => {
       <SwipeToDeleteDndContext {...swipeToDeleteDndContextProps}>
         {previews?.map((item) => {
           const {
-            recipientInfo: {
-              userId: recipientId,
+            user: {
+              id: recipientId,
               picture: recipientImg,
               name: recipientName,
             },
@@ -64,7 +64,7 @@ const Previews = () => {
                 <Button
                   onClick={handleToggleActive}
                   background={
-                    activeMessage?.recipientInfo?.userId === recipientId
+                    activeMessage?.user?.id === recipientId
                       ? "gray.100"
                       : "white"
                   }

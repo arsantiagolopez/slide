@@ -13,9 +13,9 @@ const Search = ({ searchValue, setSearchValue }) => {
   // Filter previews based on name
   useEffect(() => {
     if (previewsCopy) {
-      const previews = previewsCopy.filter(({ recipientInfo }) => {
+      const previews = previewsCopy.filter(({ user }) => {
         // Turn to lowercase to compare
-        const name = recipientInfo.name.toLowerCase();
+        const name = user.name.toLowerCase();
         const search = searchValue?.toLowerCase();
 
         const isMatch = name.includes(search);

@@ -4,7 +4,6 @@ import React from "react";
 import { Inbox } from "../components/Inbox";
 import { getLayout } from "../components/Layout";
 import { LoadingScreen } from "../components/LoadingScreen";
-import { MessageProvider } from "../context/MessageProvider";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { useUser } from "../utils/useUser";
 
@@ -22,9 +21,7 @@ const Messages = () => {
         <title>Slide - Messages</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MessageProvider>
-        <Inbox />
-      </MessageProvider>
+      <Inbox />
     </>
   );
 };

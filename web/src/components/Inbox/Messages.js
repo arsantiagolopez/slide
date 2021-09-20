@@ -20,24 +20,17 @@ const Messages = () => {
   const { activeMessage, setActiveMessage, recipientId, setRecipientId } =
     useContext(MessageContext);
 
-  let timestampDaysArr = [];
-
   // Set active recipient & handle mobile animation
   useEffect(() => {
     if (activeMessage) {
-      const {
-        recipientInfo: { userId },
-      } = activeMessage;
-
-      setRecipientId(userId);
-
+      const { user } = activeMessage;
+      setRecipientId(user?.id);
       // Opens mobile message board full screen
       setIsBoardOpen(true);
     }
   }, [activeMessage]);
 
   const topSectionProps = { activeMessage, setActiveMessage, setIsBoardOpen };
-  const middleSectionProps = { timestampDaysArr };
   const bottomSectionProps = { activeMessage, recipientId };
 
   return (
@@ -61,7 +54,7 @@ const Messages = () => {
         <TopSection {...topSectionProps} />
 
         {/* Message bubbles (middle section) */}
-        <Bubbles {...middleSectionProps} />
+        <Bubbles />
 
         {/* Message input (bottom section) */}
         <BottomSection {...bottomSectionProps} />
@@ -77,8 +70,9 @@ const Messages = () => {
  ***********************************************************************/
 
 const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
-  const { recipientInfo } = activeMessage || {};
-  const firstName = recipientInfo?.name.split(" ")[0];
+  const { user } = activeMessage || {};
+  const { name, picture } = user || {};
+  const firstName = name?.split(" ")[0];
 
   // Custom mobile slideIn & out animation
   const handleBoardDisplay = async () => {
@@ -89,10 +83,10 @@ const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
     setActiveMessage(null);
   };
 
-  const isPictureGradient = recipientInfo?.picture.includes("linear-gradient");
+  const isPictureGradient = picture?.includes("linear-gradient");
 
   return (
-    <Flex {...styles.recipientInfoContainer}>
+    <Flex {...styles.userContainer}>
       <Flex {...styles.nameContainer}>
         <Button
           {...styles.returnButton}
@@ -106,18 +100,13 @@ const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
         <Heading {...styles.name}>{firstName}</Heading>
       </Flex>
 
-      <Flex minWidth="2em">
-        {/* User avatar */}
-
+      <Flex {...styles.avatar}>
         {isPictureGradient ? (
-          <Flex background={recipientInfo?.picture} {...styles.picture} />
+          <Flex background={picture} {...styles.picture} />
         ) : (
-          <Image src={recipientInfo?.picture} {...styles.picture} />
+          <Image src={picture} {...styles.picture} />
         )}
       </Flex>
-
-      {/* Options button */}
-      {/* <IoEllipsisVerticalSharp {...styles.optionsIcon} /> */}
     </Flex>
   );
 };
@@ -231,7 +220,7 @@ const styles = {
     marginY: { base: "2", md: "1" },
     height: "40%",
   },
-  recipientInfoContainer: {
+  userContainer: {
     justify: "space-between",
     align: "center",
     minHeight: { base: "4em", md: "min(6em, 20vh)" },
@@ -251,6 +240,9 @@ const styles = {
     fontSize: { base: "26pt", md: "min(42pt, 3.5em)" },
     noOfLines: 1,
     paddingRight: "2",
+  },
+  avatar: {
+    minWidth: "2em",
   },
   picture: {
     boxShadow:

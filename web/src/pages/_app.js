@@ -1,5 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Layout } from "../components/Layout";
+import { MessageProvider } from "../context/MessageProvider";
 import { UserProvider } from "../context/UserProvider";
 import "../styles/global.css";
 import theme from "../theme";
@@ -10,7 +11,11 @@ const MyApp = ({ Component, pageProps }) => {
 
   return (
     <ChakraProvider theme={theme}>
-      <UserProvider>{getLayout(<Component {...pageProps} />)}</UserProvider>
+      <UserProvider>
+        <MessageProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </MessageProvider>
+      </UserProvider>
     </ChakraProvider>
   );
 };

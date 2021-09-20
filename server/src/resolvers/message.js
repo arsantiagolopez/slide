@@ -21,18 +21,13 @@ export default {
       ),
     },
   },
-
   Query: {
     /**
-     * This is the entry point of the messages page
-     * @returns an ordered array of the unique IDs of users you
-     * have interacted with (newest to oldest)
+     * Get all conversations with users, including their info.
+     * @returns an array of objects containing an user object
+     * with their info and an array of messages of said user.
      */
-
-    // TODO ?? :     // Check for possible archived conversations to prevent passed Id
-    // of archived messages
-
-    getUniqueMessageUserIds: async (_, __, { models, req }) => {
+    getConversations: async (_, __, { models, req }) => {
       const myId = req.session.userId;
 
       // Get only messages not archived by me
@@ -63,143 +58,41 @@ export default {
         order: [["created_at", "DESC"]],
       });
 
-      // Return id of user other than self
-      const ids = messages.map((message) => {
-        const {
-          dataValues: { senderId, recipientId },
-        } = message;
-
-        // If I'm the sender, return recipientId
+      // Get Ids of users associated with message (excluding me)
+      const ids = messages.map(({ senderId, recipientId }) => {
+        // If I'm the sender, user is recipientId
         if (senderId === myId) return recipientId;
-        // If I'm the recipient, return senderId
+        // If I'm the recipient, user is the senderId
         else return senderId;
       });
 
-      return [...new Set(ids)];
-    },
-    /**
-     * Get users' profile information
-     * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
-     * @returns an array of user profiles.
-     */
-    getMessageUserProfiles: async (_, { userIds }, { models }) => {
+      // Get unique users
+      const userIds = [...new Set(ids)];
+
+      // Get their profiles
       const users = await models.User.findAll({
         where: { id: userIds },
       });
 
-      if (!users) return [];
-
-      // Only get needed profile values
+      // Only get needed values
       const profiles = users.map(({ id, name, picture }) => ({
-        userId: id,
+        id,
         name,
         picture,
       }));
 
-      return profiles;
-    },
-
-    /**
-     * Get newest message for every user.
-     * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
-     * @returns an array of messages.
-     */
-
-    getNewestMessageByUsers: async (_, { userIds }, { models, req }) => {
-      const myId = req.session.userId;
-
-      const messages = userIds.map(async (userId) => {
-        // Get the latest message between two users
-        const newest = await models.Message.findOne({
-          where: {
-            [Op.or]: [
-              {
-                // sender_id = myId AND recipient_id = userId
-                [Op.and]: [{ senderId: myId }, { recipientId: userId }],
-              },
-              {
-                // OR sender_id = userId AND recipient_id = myId
-                [Op.and]: [{ senderId: userId }, { recipientId: myId }],
-              },
-            ],
-          },
-          // Newest message
-          order: [["created_at", "DESC"]],
-        });
-
-        return {
-          userId,
-          message: newest,
-        };
-      });
-
-      return messages;
-    },
-
-    /**
-     * Get the recent conversations between you and users for caching purposes.
-     * @param {int} last - Number of conversations to query
-     * @param {[string]} userIds - Ordered array of users you have messages with (newest to oldest)
-     * @returns an array of conversations with message data.
-     */
-
-    getRecentConversations: async (_, { last, userIds }, { models, req }) => {
-      const myId = req.session.userId;
-
-      // Get only the last (x) conversations
-      const usersToFetch = userIds.slice(0, last);
-
-      const conversations = usersToFetch.map(async (userId) => {
-        const messages = await models.Message.findAll({
-          where: {
-            // sender_id = myId OR recipient_id = myId
-            [Op.or]: [
-              {
-                // sender_id = myId AND recipient_id = userId
-                [Op.and]: [{ senderId: myId }, { recipientId: userId }],
-              },
-              {
-                // OR sender_id = userId AND recipient_id = myId
-                [Op.and]: [{ senderId: userId }, { recipientId: myId }],
-              },
-            ],
-          },
-          order: [["created_at", "ASC"]],
-        });
-
-        return {
-          userId,
-          messages,
-        };
+      const conversations = userIds.map((userId) => {
+        // Get user's profile
+        const user = profiles.find(({ id }) => userId === id);
+        // Get every message associated with user
+        const conversation = messages.filter(
+          ({ senderId, recipientId }) =>
+            senderId === userId || recipientId === userId
+        );
+        return { user, messages: conversation };
       });
 
       return conversations;
-    },
-
-    /**
-     * Get conversation with user.
-     * @param {string} userId - User ID.
-     * @returns an array of messages.
-     */
-
-    getUserConversation: async (_, { userId }, { models, req }) => {
-      const myId = req.session.userId;
-
-      const conversation = await models.Message.findAll({
-        where: {
-          [Op.or]: [
-            {
-              [Op.and]: [{ senderId: myId }, { recipientId: userId }],
-            },
-            {
-              [Op.and]: [{ senderId: userId }, { recipientId: myId }],
-            },
-          ],
-        },
-        order: [["created_at", "ASC"]],
-      });
-
-      return conversation;
     },
   },
   Mutation: {
@@ -210,18 +103,17 @@ export default {
      * @param {string} body - Text message body.
      * @returns a success response in the form of { success: true }
      */
-
     createMessage: async (
       _,
       { input: { senderId, recipientId, body } },
       { models, req }
     ) => {
-      // TODO: REMOVE senderId arg and line 191 "senderId ||"
-      // This is just for trial without having to log into account
+      // For testing purposes, replace myId with `senderId || myId`
       const myId = req.session.userId;
 
       const message = await models.Message.create({
-        senderId: senderId || myId,
+        // senderId: senderId || myId,
+        senderId: myId,
         recipientId,
         body,
       });
@@ -249,11 +141,10 @@ export default {
             },
           ],
         },
-        order: [["created_at", "ASC"]],
+        order: [["created_at", "DESC"]],
       });
 
       if (!conversation.length) {
-        console.log("howdy");
         return {
           errors: [
             {
@@ -306,7 +197,7 @@ export default {
         where: {
           [Op.and]: [{ senderId: userId }, { recipientId: myId }],
         },
-        order: [["created_at", "ASC"]],
+        order: [["created_at", "DESC"]],
       });
 
       // Update every message and change to seen

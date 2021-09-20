@@ -1,12 +1,8 @@
 import { Flex } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
-import React, { useEffect, useState } from "react";
-import { useClient, useQuery } from "urql";
-import {
-  GetMessageUserProfiles as GetMessageUserProfilesQuery,
-  GetNewestMessageByUsers as GetNewestMessageByUsersQuery,
-  GetUniqueMessageUserIds as GetUniqueMessageUserIdsQuery,
-} from "../../graphql/queries/message";
+import React, { useContext, useEffect, useState } from "react";
+import { useQuery } from "urql";
+import { MessageContext } from "../../context/MessageContext";
 import {
   GetAllFollowingById as GetAllFollowingByIdQuery,
   GetNewestUsers as GetNewestUsersQuery,
@@ -25,21 +21,13 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
 
   const { user } = useUser({ redirectTo: "/login" });
 
+  const { messageList } = useContext(MessageContext);
+
   const [screenHeight, setScreenHeight] = useState(null);
 
   const { height } = useDimensions();
 
   useEffect(() => setScreenHeight(height), [height]);
-
-  // useQuery promise alternative
-  const client = useClient({ requestPolicy: "cache-and-network" });
-
-  // Refetch queries on "/" load
-  // Get user IDs
-  const [{ data: userIdsData }] = useQuery({
-    query: GetUniqueMessageUserIdsQuery,
-    requestPolicy: "cache-and-network",
-  });
 
   // Get following
   const [{ data: friendsData }] = useQuery({
@@ -54,49 +42,17 @@ const Dashboard = withUrqlClient(createUrqlClient)(() => {
     requestPolicy: "cache-and-network",
   });
 
-  // Get profile data
-  const [{ data: userProfiles }] = useQuery({
-    query: GetMessageUserProfilesQuery,
-    variables: {
-      userIds: userIdsData?.getUniqueMessageUserIds,
-    },
-    pause: !userIdsData,
-    requestPolicy: "cache-and-network",
-  });
-
-  // Get latest message
-  const [{ data: newestMessageByUsers }] = useQuery({
-    query: GetNewestMessageByUsersQuery,
-    variables: {
-      userIds: userIdsData?.getUniqueMessageUserIds,
-    },
-    pause: !userIdsData,
-    requestPolicy: "cache-and-network",
-  });
-
-  // Fetch conversations
-  useEffect(async () => {
-    const dataLoaded = userIdsData && userProfiles && newestMessageByUsers;
-    if (user?.me && dataLoaded) {
-      const { getNewestMessageByUsers } = newestMessageByUsers;
-      const { getMessageUserProfiles } = userProfiles;
-
-      // Turn new messages to map for fastest search
-      const newMessagesMap = new Map(
-        getNewestMessageByUsers?.map((item) => [item.userId, item])
-      );
-
-      let withIdAndNewMessage = getMessageUserProfiles.map(
-        ({ userId, ...otherProps }) => ({
-          id: userId,
-          newestMessage: newMessagesMap.get(userId)?.message,
-          ...otherProps,
-        })
-      );
-
-      setConversations(withIdAndNewMessage);
+  // Make conversation cards
+  useEffect(() => {
+    if (messageList) {
+      // Get newest message
+      const cards = messageList.map(({ user, messages }) => ({
+        ...user,
+        newestMessage: messages[0],
+      }));
+      setConversations(cards);
     }
-  }, [user, userIdsData, userProfiles, newestMessageByUsers]);
+  }, [messageList]);
 
   // Fetch friends
   useEffect(async () => {

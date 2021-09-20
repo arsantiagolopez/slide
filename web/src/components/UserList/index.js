@@ -24,12 +24,11 @@ const UserList = ({
     type === "CONVERSATIONS" ? sortConversationsBy : sortFriendsBy;
 
   useEffect(() => {
-    // console.log(users)
     if (users && rightfulSort) {
       // Sort messages from newest to oldest (default)
       if (rightfulSort === "DATE") {
         setSortedUsers([
-          ...users.sort(
+          ...users?.sort(
             // Dates in epoch format
             (a, b) =>
               b?.newestMessage?.createdAt?.toString() -
@@ -41,7 +40,7 @@ const UserList = ({
       // Sort users alphabetically
       if (rightfulSort === "NAME") {
         setSortedUsers([
-          ...users.sort((a, b) =>
+          ...users?.sort((a, b) =>
             a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
           ),
         ]);
@@ -50,7 +49,7 @@ const UserList = ({
       // Filter out only unread messages
       if (rightfulSort === "UNREAD") {
         setSortedUsers([
-          ...users.filter(({ newestMessage: { seen, senderId } }) =>
+          ...users?.filter(({ newestMessage: { seen, senderId } }) =>
             seen === true || senderId === myId ? false : true
           ),
         ]);

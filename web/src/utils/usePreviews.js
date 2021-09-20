@@ -4,14 +4,15 @@ import { useClient } from "urql";
 import { MessageContext } from "../context/MessageContext";
 import { GetUserProfileById as GetUserProfileByIdQuery } from "../graphql/queries/user";
 
-const getPreviews = (myId, list, queryUser, setActiveMessage) => {
-  let previews = list.map(({ conversation, ...otherUserProps }) => {
-    const lastItem = conversation.length - 1;
-    const { createdAt, seen, senderId, ...newestMessageProps } =
-      conversation[lastItem];
+// messageList: { user: {...}, messages: {...} }
+
+const getPreviews = (myId, list, queryUser, setActiveMessage, router) => {
+  let previews = list.map(({ user, messages }) => {
+    // Get the newest message to display in preview
+    const { createdAt, seen, senderId, ...newestMessageProps } = messages[0];
 
     return {
-      ...otherUserProps,
+      user,
       newestMessage: {
         // If last message sent by me, automatically seen
         seen: senderId === myId ? true : seen,
@@ -24,15 +25,13 @@ const getPreviews = (myId, list, queryUser, setActiveMessage) => {
 
   if (queryUser) {
     const queryHasPreview = previews.find(
-      ({ recipientInfo: { userId } }) =>
-        userId === queryUser.recipientInfo?.userId
+      ({ user: { id } }) => id === queryUser.user?.id
     );
 
     // If query has preview: Move to top & set active
     if (queryHasPreview) {
       let previewsWithoutQueryUser = previews.filter(
-        ({ recipientInfo: { userId } }) =>
-          userId !== queryUser.recipientInfo.userId
+        ({ user: { id } }) => id !== queryUser.user?.id
       );
 
       // Sort other previews
@@ -43,16 +42,16 @@ const getPreviews = (myId, list, queryUser, setActiveMessage) => {
       // Set queryHasPreview as activeMessage
       setActiveMessage(queryHasPreview);
 
+      // Remove after message active
+      router.replace("/messages", undefined, { shallow: true });
+
       return [queryHasPreview, ...previewsWithoutQueryUser];
     }
 
     // Query doesn't have preview: create temp preview, move to top & set active
+    const { id, name, picture } = queryUser;
     const tempPreview = {
-      recipientInfo: {
-        userId: queryUser.id,
-        picture: queryUser.picture,
-        name: queryUser.name,
-      },
+      user: { id, name, picture },
       newestMessage: {
         timestamp: new Date(),
         seen: true,
@@ -83,32 +82,33 @@ const usePreviews = () => {
   const { myId, messageList, setPreviewsCopy, setActiveMessage } =
     useContext(MessageContext);
 
-  const { query } = useRouter();
+  const router = useRouter();
+  const { query } = router || {};
 
   const client = useClient();
 
   // Create & update lighter previews object with only newest message
   useEffect(async () => {
     if (messageList) {
-      let users;
+      let users, queryUser;
+
       // No query in URL
       if (!query?.user) {
         users = getPreviews(myId, messageList);
       }
-
       // Query in URL
       else {
-        let queryUser = messageList.find(
-          ({ recipientInfo: { userId } }) => userId === query?.user
-        );
+        queryUser = messageList.find(({ user: { id } }) => id === query?.user);
 
         // User exists: move to top & set active
         if (queryUser) {
-          users = getPreviews(myId, messageList, queryUser, setActiveMessage);
-
-          // Update previews & copy (for search functionality)
-          setPreviews(users);
-          setPreviewsCopy(users);
+          users = getPreviews(
+            myId,
+            messageList,
+            queryUser,
+            setActiveMessage,
+            router
+          );
         }
 
         // User doesn't exist: Create preview, move to top & set active
@@ -121,13 +121,8 @@ const usePreviews = () => {
 
           queryUser = getUserProfileById;
           users = getPreviews(myId, messageList, queryUser, setActiveMessage);
-
-          // Update previews & copy (for search functionality)
-          setPreviews(users);
-          setPreviewsCopy(users);
         }
       }
-
       // Update previews & copy (for search functionality)
       setPreviews(users);
       setPreviewsCopy(users);

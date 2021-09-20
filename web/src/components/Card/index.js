@@ -6,9 +6,9 @@ import { DetailedProfile } from "../DetailedProfile";
 const Card = ({ user, active, setActive, type, friends, setFriends, myId }) => {
   const { id, name, picture, newestMessage } = user || {};
 
-  const isPictureGradient = picture.includes("linear-gradient");
+  const isPictureGradient = picture?.includes("linear-gradient");
 
-  const getFirstName = (name) => name.split(" ")[0];
+  const getFirstName = (name) => name?.split(" ")[0];
 
   const router = useRouter();
 

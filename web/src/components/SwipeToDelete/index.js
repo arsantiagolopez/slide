@@ -57,7 +57,7 @@ const SwipeToDelete = ({
 
       // Update message previews
       const nonArchivedPreviews = previews.filter(
-        (preview) => preview.recipientInfo.userId !== recipientId
+        ({ user: { id } }) => id !== recipientId
       );
 
       setPreviews(nonArchivedPreviews);

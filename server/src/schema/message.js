@@ -9,20 +9,15 @@ export default `
     createdAt: String!
   }
 
-  type NewestMessage {
-    userId: String!
-    message: Message!
+  type User {
+    id: String!
+    name: String!
+    picture: String
   }
 
   type Conversation {
-    userId: String!
+    user: User!
     messages: [Message]!
-  }
-
-  type MessageUserProfiles {
-    userId: String!
-    name: String
-    picture: String
   }
 
   type GenericMutationResponse {
@@ -42,11 +37,7 @@ export default `
   }
 
   type Query {
-    getUniqueMessageUserIds: [String]!
-    getMessageUserProfiles(userIds: [String]!): [MessageUserProfiles]!
-    getNewestMessageByUsers(userIds: [String]!): [NewestMessage]!
-    getRecentConversations(last: Int!, userIds: [String]!): [Conversation]!
-    getUserConversation(userId: String!): [Message]!
+    getConversations: [Conversation]!
   }
 
   type Mutation {

@@ -41,11 +41,9 @@ export default {
           stream
             .pipe(createWriteStream(dir))
             .on("finish", () => {
-              console.log("* Finished: ", createReadStream(dir));
               resolve(createReadStream(dir));
             })
             .on("error", (err) => {
-              console.log("* Errored: ", err);
               reject();
             })
         );

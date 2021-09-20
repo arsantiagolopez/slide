@@ -26,7 +26,6 @@ const UpdateAvatar = ({ children, setAvatarSrc }) => {
 
         const picture = uploadImage?.picture;
 
-        // TODO: Show error toast
         if (!picture) {
           return console.log(
             "Something went wrong trying to upload your picture. Try again later"

@@ -1,18 +1,17 @@
 import { Flex, Text } from "@chakra-ui/react";
 import moment from "moment";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { MessageContext } from "../../context/MessageContext";
-import { useDelay } from "../../utils/useDelay";
 
-const Bubbles = ({ timestampDaysArr }) => {
-  const {
-    activeMessage,
-    activeConversation,
-    activeTimestamp,
-    setActiveTimestamp,
-  } = useContext(MessageContext);
+const Bubbles = () => {
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [lastMessage, setLastMessage] = useState(null);
+  const { activeMessage, messageList, activeTimestamp, setActiveTimestamp } =
+    useContext(MessageContext);
 
   const scrollBoardRef = useRef(null);
+
+  let days = [];
 
   // Keep newest message on screen
   const scrollToEnd = () => {
@@ -22,9 +21,36 @@ const Bubbles = ({ timestampDaysArr }) => {
     }
   };
 
+  // Update conversation on list update
+  useEffect(() => {
+    if (activeMessage && messageList) {
+      const { id } = activeMessage?.user;
+
+      const conversation = messageList?.find(({ user }) => user.id === id);
+
+      // Return if user doesn't have messages with active user
+      if (!conversation) {
+        return setActiveConversation([]);
+      }
+
+      const { messages } = conversation;
+      setActiveConversation(messages);
+
+      // Update active message timestamp
+      const { id: messageId } = messages[0];
+      setActiveTimestamp(messageId);
+
+      // Store last message of conversation
+      const last = messages[messages.length - 1];
+      setLastMessage(last);
+    } else {
+      setActiveConversation(null);
+      setLastMessage(null);
+    }
+  }, [activeMessage, messageList]);
+
   // Keep list scrolled to bottom
-  useEffect(async () => {
-    await useDelay(50);
+  useEffect(() => {
     scrollToEnd();
   }, [activeMessage, activeConversation]);
 
@@ -40,10 +66,13 @@ const Bubbles = ({ timestampDaysArr }) => {
     // Convert timestamp to date format mm/dd/yyyy
     const timestampToDate = moment(timestamp).format("L");
 
-    const dayInArr = timestampDaysArr.find((date) => date === timestampToDate);
+    if (days.length < 1) {
+      days.push(timestampToDate);
+      return false;
+    }
 
-    if (dayInArr) return false;
-    else return timestampDaysArr.push(timestampToDate);
+    if (!days.includes(timestampToDate)) return days.push(timestampToDate);
+    else return false;
   };
 
   return (
@@ -51,53 +80,59 @@ const Bubbles = ({ timestampDaysArr }) => {
       {/* Message bubbles container */}
       <Flex {...styles.messagesWrapper}>
         {activeMessage &&
-          activeConversation?.map(
-            ({ id: messageId, senderId, createdAt: timestamp, body }) => {
-              const recipientId = activeMessage?.recipientInfo.userId;
-
-              const isRecipient = recipientId === senderId ? true : false;
-
-              const isTimestampActive = activeTimestamp === messageId;
-              const parsedTimestamp = parseInt(timestamp);
-              const formattedTimestamp = moment(parsedTimestamp).format("LL");
-
-              return (
-                // Text horizontal full with container
-                <Flex key={messageId} direction="column" width="100%">
-                  {/* Possible new day divider */}
-                  {isNewDay(parsedTimestamp) && (
+          activeConversation?.map((message) => {
+            const {
+              id: messageId,
+              senderId,
+              createdAt: timestamp,
+              body,
+            } = message;
+            const recipientId = activeMessage?.user.id;
+            const isRecipient = recipientId === senderId ? true : false;
+            const isTimestampActive = activeTimestamp === messageId;
+            const parsedTimestamp = parseInt(timestamp);
+            const formattedTimestamp = moment(parsedTimestamp).format("LL");
+            const isLastMessage = message === lastMessage;
+            return (
+              // Text horizontal full with container
+              <Flex key={messageId} direction="column" width="100%">
+                {
+                  // Last messages always display the date
+                  isLastMessage && (
                     <Text {...styles.newDayDivider}>{formattedTimestamp}</Text>
-                  )}
+                  )
+                }
+                {/* Message bubble */}
+                <Flex
+                  {...styles.messageBubble}
+                  background={isRecipient ? "brand" : "gray.100"}
+                  color={isRecipient ? "white" : "gray.800"}
+                  marginLeft={isRecipient ? "0" : "auto"}
+                  marginRight={isRecipient ? "auto" : "0"}
+                  borderRadius={isRecipient ? "1em 1em 1em 0" : "1em 1em 0 1em"}
+                  onClick={() => handleBubbleClick(messageId)}
+                >
+                  <Text>{body}</Text>
+                </Flex>
 
-                  {/* Message bubble */}
-                  <Flex
-                    {...styles.messageBubble}
-                    background={isRecipient ? "brand" : "gray.100"}
-                    color={isRecipient ? "white" : "gray.800"}
+                {/* Timestamp (show/hide on click) */}
+                {isTimestampActive && (
+                  <Text
+                    {...styles.messageTimestamp}
                     marginLeft={isRecipient ? "0" : "auto"}
                     marginRight={isRecipient ? "auto" : "0"}
-                    borderRadius={
-                      isRecipient ? "1em 1em 1em 0" : "1em 1em 0 1em"
-                    }
-                    onClick={() => handleBubbleClick(messageId)}
                   >
-                    <Text>{body}</Text>
-                  </Flex>
+                    {moment(parsedTimestamp).format("LT")}
+                  </Text>
+                )}
 
-                  {/* Timestamp (show/hide on click) */}
-                  {isTimestampActive && (
-                    <Text
-                      {...styles.messageTimestamp}
-                      marginLeft={isRecipient ? "0" : "auto"}
-                      marginRight={isRecipient ? "auto" : "0"}
-                    >
-                      {moment(parsedTimestamp).format("LT")}
-                    </Text>
-                  )}
-                </Flex>
-              );
-            }
-          )}
+                {/* Possible new day divider */}
+                {isNewDay(parsedTimestamp) && (
+                  <Text {...styles.newDayDivider}>{formattedTimestamp}</Text>
+                )}
+              </Flex>
+            );
+          })}
       </Flex>
     </Flex>
   );
@@ -118,7 +153,7 @@ const styles = {
     paddingBottom: { base: "2", md: "1em" },
   },
   messagesWrapper: {
-    direction: "column",
+    direction: "column-reverse",
     marginTop: "auto",
     width: "100%",
     // bg: "yellow.100",
@@ -133,9 +168,9 @@ const styles = {
     align: "center",
     justify: "center",
     minHeight: "2em",
-    paddingY: "3",
+    paddingY: "2",
     paddingX: "1em",
-    marginY: "2",
+    marginY: { base: "1", md: "2" },
     maxWidth: "80%",
     // animation: "fadeSlideUp 0.2s ease-in-out",
   },
