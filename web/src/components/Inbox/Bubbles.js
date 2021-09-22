@@ -102,6 +102,12 @@ const Bubbles = () => {
                     <Text {...styles.newDayDivider}>{formattedTimestamp}</Text>
                   )
                 }
+
+                {/* Possible new day divider */}
+                {isNewDay(parsedTimestamp) && (
+                  <Text {...styles.newDayDivider}>{formattedTimestamp}</Text>
+                )}
+
                 {/* Message bubble */}
                 <Flex
                   {...styles.messageBubble}
@@ -124,11 +130,6 @@ const Bubbles = () => {
                   >
                     {moment(parsedTimestamp).format("LT")}
                   </Text>
-                )}
-
-                {/* Possible new day divider */}
-                {isNewDay(parsedTimestamp) && (
-                  <Text {...styles.newDayDivider}>{formattedTimestamp}</Text>
                 )}
               </Flex>
             );

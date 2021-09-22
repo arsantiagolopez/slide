@@ -70,12 +70,6 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
     },
   });
 
-  // const passwordRegister =
-  //   isRegistered &&
-  //   register("password", {
-  //     required: "This field is required",
-  //   });
-
   // Individual registration allows for onChange destructure
   const { onChange, ...passwordRegister } =
     isRegistered &&

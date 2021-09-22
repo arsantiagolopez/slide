@@ -17,8 +17,14 @@ import { Bubbles } from "./Bubbles";
 const Messages = () => {
   const [isBoardOpen, setIsBoardOpen] = useState(true);
 
-  const { activeMessage, setActiveMessage, recipientId, setRecipientId } =
-    useContext(MessageContext);
+  const {
+    activeMessage,
+    setActiveMessage,
+    recipientId,
+    setRecipientId,
+    liveMessage,
+    refetchConversations,
+  } = useContext(MessageContext);
 
   // Set active recipient & handle mobile animation
   useEffect(() => {
@@ -31,7 +37,7 @@ const Messages = () => {
   }, [activeMessage]);
 
   const topSectionProps = { activeMessage, setActiveMessage, setIsBoardOpen };
-  const bottomSectionProps = { activeMessage, recipientId };
+  const bottomSectionProps = { recipientId, liveMessage, refetchConversations };
 
   return (
     <Flex {...styles.wrapper}>
@@ -117,9 +123,9 @@ const TopSection = ({ activeMessage, setActiveMessage, setIsBoardOpen }) => {
  *
  ***********************************************************************/
 
-const BottomSection = ({ activeMessage, recipientId }) => {
+const BottomSection = ({ recipientId, liveMessage, refetchConversations }) => {
   const [inputValue, setInputValue] = useState("");
-  const [, createMessageMutation] = useMutation(CreateMessageMutation);
+  const [{ data }, createMessageMutation] = useMutation(CreateMessageMutation);
 
   const { setError } = useForm();
 
@@ -148,6 +154,13 @@ const BottomSection = ({ activeMessage, recipientId }) => {
       });
     }
   };
+
+  // Refetch on initial subscription
+  useEffect(() => {
+    if (data?.createMessage?.success && !liveMessage) {
+      refetchConversations();
+    }
+  }, [liveMessage, data]);
 
   // Listen & send message when the enter key is pressed
   const handleKeyDown = (event) => {
@@ -245,6 +258,7 @@ const styles = {
     minWidth: "2em",
   },
   picture: {
+    zIndex: "99",
     boxShadow:
       "0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px -2px rgba(0, 0, 0, 0.05)",
     borderRadius: "50%",

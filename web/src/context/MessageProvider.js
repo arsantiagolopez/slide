@@ -144,6 +144,8 @@ const MessageProvider = withUrqlClient(createUrqlClient)(({ children }) => {
         activeMessage,
         recipientId,
         activeTimestamp,
+        liveMessage,
+        refetchConversations,
         setActiveTimestamp,
         setRecipientId,
         setActiveMessage,

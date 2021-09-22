@@ -9,6 +9,8 @@ const MessageContext = createContext({
   recipientId: null,
   activeTimestamp: null,
   query: null,
+  liveMessage: null,
+  refetchConversations: () => {},
   setQuery: () => {},
   setActiveTimestamp: () => {},
   setRecipientId: () => {},
