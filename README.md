@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://i.ibb.co/bgbJxw9/word.png" />
+    <img src="https://i.ibb.co/M1LpP2K/logo-03.png" />
     <a href="https://slide.golf" style="color: #303030;"><h1>Slide</h1></a>
     <h4>Fast, simple, secure messaging between users. Start a conversation with any user in the platform. Add them as friends, and get notified on incoming messages.</h4>
 </div>
@@ -10,12 +10,16 @@
     <img src="https://img.shields.io/github/languages/top/arsantiagolopez/slide" />
 </div>
 
+<br>
+
 <div align="center">
 	<a href="https://alexandersantiago.com/"><img src="https://alexandersantiago.com/alex.png" width="24" style="margin-left: -1em;" /></a>
 	<a href="https://instagram.com/asantilopez"><img src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/instagram_online_social_media_photo-1024.png" width="25" /></a>
 	<a href="https://twitter.com/arsantiagolopez"><img src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/twitter_online_social_media-512.png" width="25" /></a>
 	<a href="mailto:arsantiagolopez@gmail.com"><img src="https://cdn4.iconfinder.com/data/icons/black-white-social-media/32/mail_email_envelope_send_message-1024.png" width="25" /></a>
 </div>
+
+<br>
 
 <div align="center">
   <a href="#preview">Preview</a> •
@@ -27,24 +31,29 @@
   <a href="#contact">Contact</a>
 </div>
 
+<br>
+
 <h2 id="preview">⚡ Preview</h2>
 
 <details open>
-  <summary>Mobile</summary>
+  <summary><h3>Mobile</h3></summary>
+  <img src="https://github.com/arsantiagolopez/gifs/blob/main/slide/mobile.gif" />
 </details>
-
 <details>
-  <summary>Desktop</summary>
+  <summary><h3>Desktop</h3></summary>
+  <img src="https://github.com/arsantiagolopez/gifs/blob/main/slide/desktop.gif" />
 </details>
 
 <h2 id="features">🎯 Features</h2>
 
-- Start a conversation with any user in the platform.
+- Send messages to any user in the platform.
 - Local email authentication via email & password.
 - Update your profile name and picture.
-- Image uploads to S3 buckets.
+- Default gradient display picture on sign up.
+- Image uploads and hosting through ImgBB's API.
 - Friend/unfriend other users.
 - Receive live notifications on incoming messages.
+- Delete/archive unwanted messages.
 - Sort conversations by date, name or unread.
 - Sort friends by date or name.
 - Interactive inbox like UI.
@@ -175,8 +184,8 @@ Practice project to master GraphQL, subscriptions and improve on skills learned 
 
 - GraphQL mutations.
 - Master GraphQL.
-- Integrate a minimal modern convetional UI.
-- Advanced data caching with URQL.
+- Integrate a minimal modern conventional UI.
+- Advanced data fetching & caching with URQL.
 
 <h2 id="license">📜 License</h2>
 

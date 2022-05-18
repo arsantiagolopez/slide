@@ -69,7 +69,14 @@ const Avatar = withUrqlClient(createUrqlClient)(({ user }) => {
   };
 
   // Update user avatar if user
-  useEffect(() => setAvatarSrc(user?.me?.picture), [user]);
+  useEffect(() => {
+    if (user) {
+      // Don't unmount image preview until page refresh
+      if (!avatarSrc?.includes("blob:")) {
+        setAvatarSrc(user?.me?.picture);
+      }
+    }
+  }, [user]);
 
   const nameEditableProps = { handleUpdate, defaultValue: user?.me?.name };
   const updateAvatarProps = { setAvatarSrc };

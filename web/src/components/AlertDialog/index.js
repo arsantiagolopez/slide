@@ -129,7 +129,7 @@ const styles = {
   },
   confirmButton: {
     marginLeft: 1,
-    bg: "gray.800",
+    bg: "red.700",
     color: "white",
   },
 };

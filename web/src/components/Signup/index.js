@@ -73,7 +73,12 @@ const Signup = ({ setIsLogin, email }) => {
         </Flex>
 
         <Flex {...styles.field}>
-          <Input placeholder="Your name" {...styles.input} {...nameRegister} />
+          <Input
+            placeholder="Your name"
+            autoComplete="off"
+            {...styles.input}
+            {...nameRegister}
+          />
           {errors.name && <Text {...styles.error}>{errors.name.message}</Text>}
         </Flex>
 
@@ -81,6 +86,7 @@ const Signup = ({ setIsLogin, email }) => {
           <Input
             type="password"
             placeholder="Your password"
+            autoComplete="off"
             {...styles.input}
             {...passwordRegister}
           />

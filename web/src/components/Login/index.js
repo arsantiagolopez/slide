@@ -99,6 +99,7 @@ const Login = ({ isRegistered, setIsRegistered, setIsLogin, setEmail }) => {
         <Flex {...styles.field}>
           <Input
             placeholder="Your email"
+            autoComplete="off"
             {...styles.input}
             {...emailRegister}
           />

@@ -4,7 +4,7 @@
   "private": true,
   "description": "Slide messaging system's frontend.",
   "scripts": {
-    "dev": "next dev -p 7000",
+    "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start"
   },
