@@ -178,7 +178,7 @@
 
 <h2 id="inspiration">💡 Inspiration</h2>
 
-Practice project to master GraphQL, subscriptions and improve on skills learned during "Auth" development.
+GraphQL subscriptions was the next intriguing step in my path to GraphQL mastery. An instant messaging application seemed like the perfect project to put GraphQL subscriptions to practice. Most social media applications have some sort of messaging system to allow users to interact with each other. So being able to build one from the ground up seemed like a great challenge and was of interest to me.
 
 <h2 id="objectives">🚀 Learning Objectives</h2>
 
