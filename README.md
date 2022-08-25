@@ -1,7 +1,7 @@
 <div align="center">
     <img src="https://i.ibb.co/M1LpP2K/logo-03.png" />
     <a href="https://slide.golf" style="color: #303030;"><h1>Slide</h1></a>
-    <h4>Fast, simple, secure messaging between users. Start a conversation with any user in the platform. Add them as friends, and get notified on incoming messages.</h4>
+    <h4>Fast, simple and secure messaging between users. Start a conversation with any user on the platform, add them as a friend, and get notified of incoming messages.</h4>
 </div>
 
 <div align="center">
@@ -46,17 +46,17 @@
 
 <h2 id="features">🎯 Features</h2>
 
-- Send messages to any user in the platform.
+- Send messages to any user on the platform.
 - Local email authentication via email & password.
 - Update your profile name and picture.
-- Default gradient display picture on sign up.
+- Default gradient display picture upon sign-up.
 - Image uploads and hosting through ImgBB's API.
 - Friend/unfriend other users.
-- Receive live notifications on incoming messages.
+- Receive live notifications of incoming messages.
 - Delete/archive unwanted messages.
 - Sort conversations by date, name or unread.
 - Sort friends by date or name.
-- Interactive inbox like UI.
+- Interactive inbox-like UI.
 
 <h2 id="tech">‎‍💻 Tech Stack</h2>
 
@@ -69,11 +69,11 @@
   </tr>
   <tr>
       <td><a href="https://reactjs.org/">React</a></td>
-      <td>To build a component based user interface.</td>
+      <td>Build a component-based user interface.</td>
   </tr>
   <tr>
       <td><a href="https://nextjs.org/">Next.js</a></td>
-      <td>Server side rendering (SSR) of React components.</td>
+      <td>Server-side rendering (SSR) of React components.</td>
   </tr>
   <tr>
       <td><a href="https://formidable.com/open-source/urql/">URQL</a></td>
@@ -85,7 +85,7 @@
     </tr>
     <tr>
       <td><a href="https://www.apollographql.com/docs/apollo-server/data/subscriptions/">Websockets</a></td>
-      <td>GraphQL live subscriptions for real time messaging.</td>
+      <td>GraphQL live subscriptions for real-time messaging.</td>
   </tr>
     <tr>
       <td><a href="https://react-hook-form.com/">React Hook Form</a></td>
@@ -135,7 +135,7 @@
     </tr>
     <tr>
         <td><a href="https://redis.io/">Redis</a></td>
-        <td>Store session data in memory for lighting fast queries.</td>
+        <td>Store session data in memory for lightning-fast queries.</td>
     </tr>
     <tr>
         <td><a href="https://sequelize.org/">Sequelize</a></td>
@@ -147,7 +147,8 @@
     </tr>
     <tr>
       <td><a href="https://github.com/sindresorhus/got">GOT</a></td>
-      <td>Fetch data with promise based HTTP requests.</td>
+      <td>Fetch data with promise-based HTTP requests.
+</td>
     </tr>
     <tr>
         <td>GraphQL API</td>
@@ -178,7 +179,7 @@
 
 <h2 id="inspiration">💡 Inspiration</h2>
 
-GraphQL subscriptions was the next intriguing step in my path to GraphQL mastery. An instant messaging application seemed like the perfect project to put GraphQL subscriptions to practice. Most social media applications have some sort of messaging system to allow users to interact with each other. So being able to build one from the ground up seemed like a great challenge and was of interest to me.
+The next intriguing step in my path to GraphQL mastery was GraphQL subscriptions. An instant messaging application was the perfect project to put GraphQL subscriptions to practice. Most social media applications have some sort of messaging system to allow users to interact with each other, so the ability to build one from the ground up seemed like a riveting challenge to me.
 
 <h2 id="objectives">🚀 Learning Objectives</h2>
 
